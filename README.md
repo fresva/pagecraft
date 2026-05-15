@@ -2,7 +2,7 @@
 
 An interview bot that builds a structured web page **collaboratively and in real time** with the person being interviewed — instead of post-processing their answers into a page after the fact.
 
-PageCraft was built as a research prototype for [UTTC (Urban Twin Transition Centre)](https://uttc.se) to capture sustainability case studies from Swedish municipalities. The interviewee is a strategist at a Swedish *kommun*; the output is a public-facing case study page.
+PageCraft was built as a research prototype for [UTTC (Urban Twin Transition Centre)](https://uttc.se) to capture sustainability case studies from Swedish municipalities. The interviewee is a practitioner at a Swedish *kommun* — typically someone who has led or worked closely on the case being described; the output is a public-facing case study page in the style of UTTC's existing [manually-produced case library](https://uttc.se/anvandningsfall/).
 
 ## What's interesting about it
 
@@ -16,7 +16,7 @@ The bot uses [MCP (Model Context Protocol)](https://modelcontextprotocol.io) too
 
 ## Status: research prototype
 
-The end-to-end pipeline works — including with Azure OpenAI as the live conversation model — but PageCraft has not yet been used in a real interview with a municipal strategist. Treat it as a working sketch of an architecture, not a piloted system.
+The end-to-end pipeline works — including with Azure OpenAI as the live conversation model — but PageCraft has not yet been used in a real interview with a municipal practitioner. Treat it as a working sketch of an architecture, not a piloted system.
 
 ### What works today
 
