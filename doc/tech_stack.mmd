@@ -1,0 +1,36 @@
+flowchart TB
+    subgraph Browser
+        UI["Chat UI + Preview Panel<br/>(Jinja2 HTML + JS)"]
+        WSC["WebSocket client<br/>(OOB swap handler)"]
+        UI --- WSC
+    end
+
+    subgraph App["FastAPI app (Uvicorn, ASGI)"]
+        direction TB
+        R["Routes<br/>interview / preview / websocket"]
+        E["Orchestrator Engine<br/>(conversation loop)"]
+        PL["PromptLoader<br/>prompts/system.md"]
+        LC["LLMClient<br/>AsyncAzureOpenAI"]
+        MB["MCPBridge<br/>tool discovery + invocation"]
+        PS["page_service<br/>(CRUD)"]
+
+        subgraph MCP["FastMCP server (in-process)"]
+            T["10 @mcp.tool functions<br/>write_hero, write_situation,<br/>write_kpis, ..."]
+            RND["Renderer<br/>(Jinja2 component templates)"]
+            T --> RND
+        end
+
+        R --> E
+        E --> PL
+        E --> LC
+        E --> MB
+        E --> PS
+        MB --> MCP
+    end
+
+    DB[("SQLite / aiosqlite<br/>pages, components,<br/>conversation_messages")]
+    AZ["Azure OpenAI<br/>gpt-5.2-chat"]
+
+    WSC <-->|WebSocket| R
+    PS --> DB
+    LC --> AZ

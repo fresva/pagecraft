@@ -1,0 +1,38 @@
+from dataclasses import dataclass, field
+from datetime import datetime
+
+
+@dataclass
+class Page:
+    id: int | None = None
+    uri_token: str = ""
+    title: str | None = None
+    status: str = "active"
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+@dataclass
+class Component:
+    id: int | None = None
+    page_id: int = 0
+    component_type: str = ""
+    display_order: int = 0
+    html: str = ""
+    data_json: str = ""
+    status: str = "draft"
+    version: int = 1
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+@dataclass
+class Annotation:
+    id: int | None = None
+    component_id: int = 0
+    field: str = ""
+    message: str = ""
+    severity: str = "verify"
+    resolved: bool = False
+    resolved_at: datetime | None = None
+    created_at: datetime | None = None

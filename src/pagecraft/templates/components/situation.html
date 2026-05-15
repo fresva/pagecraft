@@ -1,0 +1,16 @@
+<div class="component-situation">
+    <div class="situation-grid">
+        <div class="situation-column">
+            <h3>Nuläge</h3>
+            <p>{{ current_situation | default("Beskriv nuläget...") }}</p>
+        </div>
+        <div class="situation-column">
+            <h3>Utmaning</h3>
+            <p>{{ challenge | default("Beskriv utmaningen...") }}</p>
+        </div>
+        <div class="situation-column">
+            <h3>Lösning</h3>
+            <p>{{ solution | default("Beskriv lösningen...") }}</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+<div class="chat-bubble chat-{{ role | default('assistant') }}">
+    <div class="chat-role">{{ role_label | default("Bot") }}</div>
+    <div class="chat-text">{{ text }}</div>
+</div>

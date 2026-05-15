@@ -1,0 +1,26 @@
+<section class="component component-impact">
+    <h2>Effektbedömning</h2>
+    {% set default_co2 = {"value": ">50%", "description": "Kombinerade åtgärder kan minska nettoutsläppen med mer än hälften jämfört med Business As Usual-scenariot."} %}
+    {% set default_cost = {"value": "Hög", "description": "Flera av de identifierade åtgärderna har positiv kostnads-nyttobalans och betalar sig själva genom energibesparingar."} %}
+    {% set default_spread = {"value": "290 kommuner", "description": "Verktyget kan användas av alla Sveriges kommuner som arbetar med samhällsplanering och klimatanpassning."} %}
+    {% set co2 = co2_reduction | default(default_co2) %}
+    {% set cost = cost_benefit | default(default_cost) %}
+    {% set spread = spread_potential | default(default_spread) %}
+    <div class="impact-grid">
+        <div class="impact-card">
+            <h3>CO2e-minskningspotential</h3>
+            <div class="impact-value">{{ co2.value }}</div>
+            <p>{{ co2.description }}</p>
+        </div>
+        <div class="impact-card">
+            <h3>Klimat för pengarna</h3>
+            <div class="impact-value">{{ cost.value }}</div>
+            <p>{{ cost.description }}</p>
+        </div>
+        <div class="impact-card">
+            <h3>Spridningspotential</h3>
+            <div class="impact-value">{{ spread.value }}</div>
+            <p>{{ spread.description }}</p>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,25 @@
+{% set default_co2 = {"value": "N/A", "description": "CO2 KPI"} %}
+{% set default_profit = {"value": "N/A", "description": "Lönsamhet"} %}
+{% set default_invest = {"value": "N/A", "description": "Investering"} %}
+{% set c = co2_kpis | default(default_co2) %}
+{% set p = profitability | default(default_profit) %}
+{% set inv = investment | default(default_invest) %}
+<div class="component-kpis">
+    <div class="kpis-grid">
+        <div class="kpi-cell">
+            <h3>CO2 KPI</h3>
+            <div class="kpi-value">{{ c.value }}</div>
+            <p class="kpi-description">{{ c.description }}</p>
+        </div>
+        <div class="kpi-cell">
+            <h3>Lönsamhet</h3>
+            <div class="kpi-value">{{ p.value }}</div>
+            <p class="kpi-description">{{ p.description }}</p>
+        </div>
+        <div class="kpi-cell">
+            <h3>Investeringar</h3>
+            <div class="kpi-value">{{ inv.value }}</div>
+            <p class="kpi-description">{{ inv.description }}</p>
+        </div>
+    </div>
+</div>

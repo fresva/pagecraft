@@ -1,0 +1,19 @@
+<section class="component component-personas">
+    <h2>Intressenter</h2>
+    {% set default_personas = [
+        {"role": "Kommunplanerare", "benefit": "Får kvantitativt underlag för klimatsmarta planeringsbeslut redan i tidiga skeden.", "quote": "Nu kan vi visa politikerna exakt vilken skillnad olika val gör."},
+        {"role": "Miljöstrateg", "benefit": "Kan koppla planering till kommunens klimatmål och följa upp framsteg med konkreta siffror.", "quote": ""},
+        {"role": "Politiker", "benefit": "Får beslutsunderlag som visar långsiktiga klimatkonsekvenser av olika investeringsalternativ.", "quote": ""}
+    ] %}
+    <div class="personas-grid">
+        {% for persona in personas | default(default_personas) %}
+        <div class="persona-card">
+            <h3>{{ persona.role }}</h3>
+            <p>{{ persona.benefit }}</p>
+            {% if persona.quote %}
+            <blockquote>"{{ persona.quote }}"</blockquote>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>

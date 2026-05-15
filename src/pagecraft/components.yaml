@@ -1,0 +1,70 @@
+components:
+  - type: hero
+    label: "Introduktion"
+    tool: write_hero
+    template: components/hero.html
+    page_order: 1
+    interview_order: 8
+
+  - type: metadata
+    label: "Metadata"
+    tool: write_metadata
+    template: components/metadata.html
+    page_order: 2
+    interview_order: 9
+
+  - type: situation
+    label: "Nuläge / Utmaning / Lösning"
+    tool: write_situation
+    template: components/situation.html
+    page_order: 3
+    interview_order: 1
+
+  - type: kpis
+    label: "Nyckeltal"
+    tool: write_kpis
+    template: components/kpis.html
+    page_order: 4
+    interview_order: 3
+
+  - type: impact
+    label: "Effektbedömning"
+    tool: write_impact
+    template: components/impact.html
+    page_order: 5
+    interview_order: 4
+
+  - type: implementation
+    label: "Implementeringsberättelse"
+    tool: write_implementation
+    template: components/implementation.html
+    page_order: 6
+    interview_order: 2
+
+  - type: resources
+    label: "Resurser"
+    tool: write_resources
+    template: components/resources.html
+    page_order: 7
+    interview_order: 5
+
+  - type: getting_started
+    label: "Kom igång"
+    tool: write_getting_started
+    template: components/getting_started.html
+    page_order: 8
+    interview_order: 6
+
+  - type: personas
+    label: "Intressenter"
+    tool: write_personas
+    template: components/personas.html
+    page_order: 9
+    interview_order: 7
+
+  - type: contact
+    label: "Kontakt"
+    tool: write_contact
+    template: components/contact.html
+    page_order: 10
+    interview_order: 10

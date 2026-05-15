@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+
+# Tooling caches
+.ruff_cache/
+.pytest_cache/
+
+# Secrets
+.env
+
+# Runtime data (SQLite databases — committed examples can be added explicitly with `git add -f`)
+*.db
+
+# macOS
+.DS_Store
+
+# Editors / IDEs
+.idea/
+.vscode/
+
+# Claude Code (user-specific permissions and local overrides)
+.claude/settings.local.json
+
+# Archive folder
+archive/

@@ -1,0 +1,34 @@
+<div class="component-metadata">
+    <div class="metadata-bar">
+        <div class="metadata-item">
+            <span class="metadata-label">Kommun</span>
+            <span class="metadata-value">{{ municipality | default("Kommun") }}</span>
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">Sektor</span>
+            <span class="metadata-value">{{ sector | default("Sektor") }}</span>
+        </div>
+        <div class="metadata-item">
+            <span class="metadata-label">Twin Transition</span>
+            <span class="metadata-value">{{ twin_transition | default("") }}</span>
+        </div>
+    </div>
+    <div class="metadata-tags">
+        {% set default_themes = ["Tema 1", "Tema 2"] %}
+        {% set t = themes | default(default_themes) %}
+        <div class="metadata-tag-group">
+            <span class="metadata-label">Teman</span>
+            {% for theme in t %}
+            <span class="metadata-tag">{{ theme }}</span>
+            {% endfor %}
+        </div>
+        {% set default_tech = ["Teknik 1"] %}
+        {% set ts = technical_solution | default(default_tech) %}
+        <div class="metadata-tag-group">
+            <span class="metadata-label">Teknisk lösning</span>
+            {% for tech in ts %}
+            <span class="metadata-tag">{{ tech }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
