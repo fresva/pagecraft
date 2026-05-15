@@ -1,11 +1,11 @@
 <section class="component component-contact">
     <h2>Kontakt</h2>
     <div class="contact-card">
-        <h3>{{ name | default("Lars Ljunggren") }}</h3>
-        <p class="contact-title">{{ title | default("Projektledare") }}</p>
-        <p class="contact-org">{{ organization | default("Huddinge kommun") }}</p>
-        {% if email | default("lars.ljunggren@huddinge.se") %}
-        <p class="contact-email">{{ email | default("lars.ljunggren@huddinge.se") }}</p>
+        <h3>{{ name | default("[Namn]") }}</h3>
+        <p class="contact-title">{{ title | default("[Titel]") }}</p>
+        <p class="contact-org">{{ organization | default("[Organisation]") }}</p>
+        {% if email | default("") %}
+        <p class="contact-email">{{ email }}</p>
         {% endif %}
         {% if phone | default("") %}
         <p class="contact-phone">{{ phone }}</p>

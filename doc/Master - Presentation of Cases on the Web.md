@@ -2,40 +2,46 @@
 title: Case template for the Web
 ---
 
-**Title: Stenafastigheter bygger storskalig och hållbar laddinfrastruktur**
+> **About this document**
+>
+> This is the case study template that PageCraft implements. The structure below — the components, their order, the bilingual headings — is the schema the interview bot fills in during a conversation. Each placeholder in brackets (`[...]`) corresponds to a field that the bot writes via an MCP tool.
+>
+> For a real-world, published example of this format, see UTTC's Stena Fastigheter case:
+> https://uttc.se/2025/03/27/skalbar-och-kostnadseffektiv-elbilsladdning-for-stads-och-bostadsomraden-cn/
 
-Description: En centralstyrd och skalbar laddinfrastruktur för elbilar som möjliggör effektiv effektstyrning, enkel installation och kostnadseffektiv drift – särskilt anpassad för platser med storskaligt behov av destinationsladdning.
+---
+
+**Title: [Engaging case study title]**
+
+Description: [One- or two-sentence description of the solution that this case is about.]
 
 \*Provide a picture representative of the solution
 
 | **Nuläge / Current Situation** | **Utmaning / Challenge** | **Lösning / Solution** |
 |:--:|:--:|:--:|
-| Fastighetsägare står inför en snabbt växande efterfrågan på elbilsladdning från boende, hyresgäster och besökare. | Det krävs lösningar som är framtidssäkra, kostnadseffektiva och smidiga att integrera i fastighetens elsystem. | En centraliserad laddplattform med smart kö- och effektstyrning möjliggör dynamisk lastbalansering och enkel expansion. |
+| [Describe the municipality's current situation — the baseline that this case starts from.] | [Describe the challenge that the project addresses.] | [Describe the solution that was developed or adopted in response.] |
 
 **Kommun / Municipality Logo**  
 \* Provide a logo of the municipality
 
 **Kommun / Municipality**  
-Göteborg
+[Municipality name]
 
 **Område / Sector**  
-Transport och Mobilitet
+[Sector — e.g. Samhällsplanering, Transport och Mobilitet, Energi]
 
 **Twin Transition**  
-Underlättar övergången till elfordon, sänker tröskeln för elbilsanvändning där människor bor och rör sig, samt optimerar energianvändningen.
+[Short description of how this case contributes to the green + digital twin transition.]
 
 **Tema / Themes**  
-Laddningsinfrastruktur  
-Smart energihantering  
-Hållbar fastighetsutveckling
+[Theme 1]  
+[Theme 2]  
+[Theme 3]
 
 **Teknisk lösning / Technical Solution**  
-Centraliserat och skalbart EV-laddsystem  
-Smart köhantering och lastbalansering  
-Öppna API:er  
-OCPP-kompatibilitet  
-Fjärruppdateringar  
-App och RFID
+[Technology / approach 1]  
+[Technology / approach 2]  
+[Technology / approach 3]
 
 <table>
 <colgroup>
@@ -45,17 +51,16 @@ App och RFID
 </colgroup>
 <thead>
 <tr>
-<th style="text-align: center;"><strong>CO2 KPI’s</strong></th>
+<th style="text-align: center;"><strong>CO2 KPI's</strong></th>
 <th style="text-align: center;"><strong>Lönsamhet / Profitability</strong></th>
 <th style="text-align: center;"><strong>Investeringar / Investment</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">3 miljoner kWh/månad motsvarar 1–1,5 miljoner liter bensin/diesel och ger upp till 15 000 ton CO₂-besparing per månad.</td>
-<td style="text-align: center;"><p>Lägre installationskostnad per plats</p>
-<p>jämfört med traditionella laddboxar tack vare centraliserat system och minskat grävarbete.</p></td>
-<td style="text-align: center;">Lägre installationskostnader -minskat grävarbete och färre enheter. Modulärt system – kan aktiveras stegvis Kostnaden sjunker ju fler laddplatser som installeras</td>
+<td style="text-align: center;">[CO₂ KPI — measurable climate impact, with units]</td>
+<td style="text-align: center;">[Profitability KPI — return on investment, cost savings, or similar]</td>
+<td style="text-align: center;">[Investment KPI — capital expenditure, funding sources]</td>
 </tr>
 <tr>
 <td style="text-align: center;"></td>
@@ -68,44 +73,32 @@ App och RFID
 <td style="text-align: center;"><strong>Spridningspotential / Scaling Potential</strong></td>
 </tr>
 <tr>
-<td style="text-align: center;"><p>Möjliggör stor reduktion av utsläpp genom att underlätta övergången till elbilar.</p>
-<p>Bidrar till att minska behovet av fossilbränslebaserade transporter</p>
-<p>Använder återvunna material (t.ex. aluminium)</p>
-<p>Visualiserar och mäter laddad energi motsvarande &gt;15 000 ton CO₂/mån</p></td>
-<td style="text-align: center;"><p>Effektoptimering sänker elnätskostnader</p>
-<p>Skalbar lösning med låg marginalkostnad per ny laddpunkt</p>
-<p>Integrerad betallösning och minskat behov av grävarbet</p></td>
-<td style="text-align: center;"><p>Mycket god skalbarhet, men kräver viss teknisk mognad hos kund.</p>
-<p>Enkelt att skala upp i fastigheter</p>
-<p>Redan i drift hos stora fastighetsägare</p>
-<p>Kräver att kunden vågar välja en alternativ lösning</p>
-<p>Offentlig sektor kan hämmas av upphandlingsrutiner och konventionella kravspecifikationer</p></td>
+<td style="text-align: center;">[Qualitative description of CO₂ reduction — what the solution enables, what behaviours it changes.]</td>
+<td style="text-align: center;">[Cost-effectiveness of the climate impact — value-for-money framing.]</td>
+<td style="text-align: center;">[How well the solution scales to other municipalities or contexts — opportunities and barriers.]</td>
 </tr>
 </tbody>
 </table>
 
 **Implementeringsberättelse**
 
-Vi visste att efterfrågan på elbilsladdning skulle öka, men ville undvika dyra och komplicerade installationer. Därför började vi med en pilot i en av våra fastigheter för att testa tekniken i liten skala. Lösningen installerades snabbt – utan större ingrepp – tack vare att den var centraliserad och modulär.  
-Efter en smidig driftsättning kunde vi följa energianvändningen i realtid och justera effektuttaget vid behov. Användarna kom enkelt igång via app och RFID, och vi kunde skala upp i takt med behovet – utan att gräva eller bygga om elsystemet.  
-Det bästa var att vi fick full kontroll över laddningen samtidigt som kostnaderna hölls nere. Nu är systemet en naturlig del av vår förvaltning, och vi fortsätter expandera till fler fastigheter.
+[A narrative — not a bullet list — of how the implementation actually went. The process, the timeline, the obstacles, the lessons learned. Written from the practitioner's point of view ("Vi …").]
 
 **Resurser**
 
-Vilka resurser behövs…
+[A coherent paragraph describing what resources were needed: staff, technology, budget, partnerships.]
 
 **Så kommer du igång**
 
-| **1** | Undersök elkapacitet i fastigheten, möjliga begränsningar i nätet och om befintliga hyres- eller arrendeavtal påverkar möjligheten att installera laddlösning. | **2** | Förankra behovet av investering hos beslutsfattare. Inkludera diskussioner om parkeringsstruktur, långsiktig hållbarhetsstrategi och möjlig samordning med andra mobilitetslösningar (t.ex. cykelpool eller delad mobilitet). | **3** | Ta reda på hur många boende eller besökare som efterfrågar laddning. Om data saknas, gör en enkel behovsanalys via en enkät eller manuell registrering, alternativt använd befintlig statistik över fordon i området. |
+| **1** | [First concrete step another municipality can take to get started.] | **2** | [Second concrete step.] | **3** | [Third concrete step.] |
 |----|----|----|----|----|----|
 
 **Personas som har nytta av lösningen...**
 
-| **Facility Manager** | **Stadsplanerare** | **EV ägare I ett bostadsområde** |
+| **[Persona 1 role]** | **[Persona 2 role]** | **[Persona 3 role]** |
 |----|----|----|
-| Jag behövde ett skalbart och kostnadseffektivt sätt att tillhandahålla elbilsladdning till våra hyresgäster utan större nätuppgraderingar. Vi behövde ett smart laddningssystem som gjorde att vi kunde optimera eldistributionen och framtidssäkra våra byggnader. | Jag arbetar för en hållbar stad med bred användning av elbilar. Vi behöver en lösning som gör det möjligt för oss att integrera laddning i urban infrastruktur utan alltför höga kostnader eller nätbelastningar. | Jag vill ha enkel tillgång till laddning i mitt lägenhetskomplex, vilket gör mitt ägande av elbil mycket bekvämare. |
+| [Short first-person quote from this persona explaining why the solution matters to them.] | [Short first-person quote from this persona.] | [Short first-person quote from this persona.] |
 
 **UTTC Kontakt**
 
-Nexhi Deti – nexhi.deti@internetstiftelsen.se  
-Rickard Dahlstrand – rickard.dahlstrand@electricityinnovation.se
+[Generic UTTC contact — e.g. contact@uttc.se]

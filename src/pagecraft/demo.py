@@ -123,10 +123,10 @@ DEMO_SEQUENCE = [
         "component": "contact",
         "tool": "write_contact",
         "tool_args": {
-            "name": "Lars Ljunggren",
+            "name": "Anna Exempel",
             "title": "Projektledare",
             "organization": "Huddinge kommun",
-            "email": "lars.ljunggren@huddinge.se",
+            "email": "anna.exempel@example.com",
         },
         "bot_reply": "Kontaktinformationen är tillagd. Vill du ändra något?",
     },
