@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Granskning — {{ page.title or "Fallstudie" }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/review.css?v={{ static_v }}">
+{% endblock %}
+
+{% block body %}
+<div class="review-layout">
+    <div class="review-preview">
+        <div class="review-preview-header">
+            <h2>{{ page.title or "Fallstudie" }}</h2>
+            <a href="/review" class="review-back">&#8592; Alla granskningar</a>
+        </div>
+        {% for c in components %}
+            {% set label = labels.get(c.component_type, c.component_type) %}
+            {% include "partials/review_component.html" %}
+        {% endfor %}
+    </div>
+
+    <aside class="review-panel">
+        <h3>Annoteringar</h3>
+        {% if annotations %}
+            {% for item in annotations %}
+                {% set ann = item.ann %}
+                {% set value = item.value %}
+                {% set comp_label = item.label %}
+                {% include "partials/annotation_card.html" %}
+            {% endfor %}
+        {% else %}
+            <p class="ann-empty">Inga annoteringar att granska.</p>
+        {% endif %}
+
+        {% include "partials/publish_bar.html" %}
+    </aside>
+</div>
+
+<div id="review-modal" class="edit-modal" hidden>
+    <div class="edit-modal-backdrop" onclick="document.getElementById('review-modal').hidden=true"></div>
+    <div class="edit-modal-panel">
+        <div id="review-modal-content"></div>
+    </div>
+</div>
+{% endblock %}

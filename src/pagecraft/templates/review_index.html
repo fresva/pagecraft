@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Granskningar{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/review.css?v={{ static_v }}">
+{% endblock %}
+
+{% block body %}
+<div class="review-index">
+    <h1>Sidor att granska</h1>
+    {% if pages %}
+    <ul class="review-index-list">
+        {% for p in pages %}
+        <li class="review-index-item">
+            <a href="/review/{{ p.id }}">{{ p.title or ("Sida " ~ p.id) }}</a>
+            <span class="review-index-status status-{{ p.status }}">
+                {{ 'Väntar på granskning' if p.status == 'awaiting_review' else 'Pågår' }}
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="review-index-empty">Inga sidor väntar på granskning just nu.</p>
+    {% endif %}
+</div>
+{% endblock %}

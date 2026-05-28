@@ -58,8 +58,11 @@ def _field_input(path: str, key: str, value: str) -> str:
     return f'<label class="edit-field"><span>{html.escape(label)}</span>{control}</label>'
 
 
-def build_edit_form_html(component_id: int, label: str, data_json: dict) -> str:
-    """Render the edit form for a component as HTML (for OOB swap into the modal)."""
+def build_edit_fields(data_json: dict) -> str:
+    """Render just the labelled input rows for a component's editable leaves.
+
+    Shared by the interview WebSocket edit modal and the review HTTP edit form.
+    """
     rows: list[str] = []
     for key, value in data_json.items():
         if isinstance(value, str):
@@ -75,12 +78,16 @@ def build_edit_form_html(component_id: int, label: str, data_json: dict) -> str:
                 elif isinstance(item, str):
                     rows.append(_field_input(f"{key}.{i}", key, item))
         # None / other types are not editable in v1 (e.g. an unset email).
+    return "".join(rows)
 
+
+def build_edit_form_html(component_id: int, label: str, data_json: dict) -> str:
+    """Render the edit form for a component as HTML (for OOB swap into the modal)."""
     return (
         f'<div id="edit-modal-content" hx-swap-oob="true">'
         f'<form id="edit-form" data-component-id="{component_id}">'
         f'<h3>Redigera: {html.escape(label)}</h3>'
-        f'{"".join(rows)}'
+        f'{build_edit_fields(data_json)}'
         f'<div class="edit-actions">'
         f'<button type="button" class="btn-save-edit" onclick="saveEdit()">Spara</button>'
         f'<button type="button" class="btn-cancel-edit" onclick="closeEditModal()">Avbryt</button>'

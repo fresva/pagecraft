@@ -14,7 +14,7 @@ from pagecraft.mcp_server.server import mcp as mcp_server
 from pagecraft.orchestrator.mcp_bridge import MCPBridge
 from pagecraft.orchestrator.prompt_loader import PromptLoader
 from pagecraft.registry import load_component_registry
-from pagecraft.routes import interview, preview
+from pagecraft.routes import interview, preview, review
 from pagecraft.routes import websocket as ws_route
 
 logger = logging.getLogger(__name__)
@@ -79,6 +79,7 @@ def create_app() -> FastAPI:
     # Routes
     app.include_router(interview.router)
     app.include_router(preview.router)
+    app.include_router(review.router)
     app.include_router(ws_route.router)
 
     return app

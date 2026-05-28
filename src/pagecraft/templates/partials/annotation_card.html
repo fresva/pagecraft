@@ -1,0 +1,28 @@
+<div class="annotation-card sev-{{ ann.severity }}" id="ann-{{ ann.id }}">
+    <div class="ann-head">
+        <span class="sev-badge sev-{{ ann.severity }}">{{ ann.severity }}</span>
+        <span class="ann-comp">{{ comp_label }}</span>
+    </div>
+    {% if value %}<div class="ann-value">"{{ value }}"</div>{% endif %}
+    <div class="ann-message">{{ ann.message }}</div>
+    {% if ann.decision == 'pending' %}
+    <form class="ann-actions">
+        <input type="text" name="curator_note" class="ann-note" placeholder="Notis till granskningen (valfritt)">
+        <div class="ann-buttons">
+            <button type="button" class="btn-ack"
+                    hx-post="/review/{{ page_id }}/annotation/{{ ann.id }}"
+                    hx-include="closest form" hx-vals='{"decision": "acknowledged"}'
+                    hx-target="#ann-{{ ann.id }}" hx-swap="outerHTML">Bekräfta</button>
+            <button type="button" class="btn-dismiss"
+                    hx-post="/review/{{ page_id }}/annotation/{{ ann.id }}"
+                    hx-include="closest form" hx-vals='{"decision": "dismissed"}'
+                    hx-target="#ann-{{ ann.id }}" hx-swap="outerHTML">Avfärda</button>
+        </div>
+    </form>
+    {% else %}
+    <div class="ann-resolved decision-{{ ann.decision }}">
+        {{ 'Bekräftad' if ann.decision == 'acknowledged' else 'Avfärdad' }}
+        {% if ann.curator_note %}<span class="ann-note-text">— {{ ann.curator_note }}</span>{% endif %}
+    </div>
+    {% endif %}
+</div>

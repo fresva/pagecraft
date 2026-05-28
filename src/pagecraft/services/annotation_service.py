@@ -28,6 +28,14 @@ async def create_annotation(
     return cursor.lastrowid
 
 
+async def get_annotation(db: aiosqlite.Connection, annotation_id: int) -> Annotation | None:
+    cursor = await db.execute(
+        "SELECT * FROM annotations WHERE id = ?", (annotation_id,)
+    )
+    row = await cursor.fetchone()
+    return Annotation(**dict(row)) if row else None
+
+
 async def get_annotations_for_component(
     db: aiosqlite.Connection, component_id: int
 ) -> list[Annotation]:

@@ -1,0 +1,246 @@
+/* === Review layout === */
+.review-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    align-items: start;
+}
+
+.review-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+}
+
+.review-back {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.review-back:hover { color: var(--color-primary); }
+
+/* === Component blocks in the preview === */
+.review-component {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.review-component-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.review-component-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.review-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+}
+
+.review-badge.is-reviewed { background: #dcfce7; color: #166534; }
+.review-badge.not-reviewed { background: #f1f5f9; color: var(--color-text-muted); }
+
+.review-component-bar button {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    cursor: pointer;
+}
+
+.btn-review:hover, .btn-unreview:hover, .review-component-bar .btn-edit:hover {
+    background: var(--color-border);
+}
+
+/* === Annotation panel === */
+.review-panel {
+    position: sticky;
+    top: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+}
+
+.review-panel h3 { margin-bottom: 0.75rem; }
+
+.annotation-card {
+    border: 1px solid var(--color-border);
+    border-left-width: 4px;
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.annotation-card.sev-verify { border-left-color: #d97706; }
+.annotation-card.sev-assumption { border-left-color: #2563eb; }
+.annotation-card.sev-missing { border-left-color: #dc2626; }
+
+.ann-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.sev-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius);
+    color: white;
+}
+
+.sev-badge.sev-verify { background: #d97706; }
+.sev-badge.sev-assumption { background: #2563eb; }
+.sev-badge.sev-missing { background: #dc2626; }
+
+.ann-comp { font-size: 0.75rem; color: var(--color-text-muted); }
+
+.ann-value {
+    font-style: italic;
+    background: var(--color-bg);
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+}
+
+.ann-message { font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+.ann-note {
+    width: 100%;
+    padding: 0.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    margin-bottom: 0.4rem;
+}
+
+.ann-buttons { display: flex; gap: 0.5rem; }
+
+.ann-buttons button {
+    flex: 1;
+    padding: 0.35rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.82rem;
+}
+
+.btn-ack { background: #16a34a; color: white; }
+.btn-dismiss { background: var(--color-border); color: var(--color-text); }
+
+.ann-resolved {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+}
+
+.ann-resolved.decision-acknowledged { color: #166534; }
+
+/* === Publish bar === */
+.publish-bar {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.publish-readiness { font-size: 0.82rem; color: var(--color-text-muted); margin-bottom: 0.5rem; }
+.publish-error { font-size: 0.82rem; color: #dc2626; margin-bottom: 0.5rem; }
+.publish-done { font-size: 0.9rem; color: #166534; font-weight: 600; }
+
+.btn-publish {
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-publish:disabled { background: var(--color-border); color: var(--color-text-muted); cursor: not-allowed; }
+
+/* === Review index === */
+.review-index { max-width: 700px; margin: 2rem auto; padding: 0 1.5rem; }
+.review-index-list { list-style: none; }
+.review-index-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+}
+.review-index-status { font-size: 0.78rem; color: var(--color-text-muted); }
+.review-index-empty { color: var(--color-text-muted); }
+
+/* === Edit modal (shared shape with the interview edit modal) === */
+.edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.edit-modal[hidden] { display: none; }
+.edit-modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.45); }
+.edit-modal-panel {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    max-width: 540px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+#review-modal-content h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+.edit-field { display: block; margin-bottom: 0.75rem; }
+.edit-field span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+.edit-field input, .edit-field textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+.edit-group { border: 1px solid var(--color-border); border-radius: var(--radius); padding: 0.75rem; margin-bottom: 0.75rem; }
+.edit-group legend { font-size: 0.8rem; font-weight: 700; padding: 0 0.4rem; color: var(--color-text-muted); }
+.edit-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+.btn-save-edit { background: var(--color-primary); color: white; border: none; padding: 0.5rem 1.25rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; }
+.btn-cancel-edit { background: transparent; border: 1px solid var(--color-border); padding: 0.5rem 1.25rem; border-radius: var(--radius); cursor: pointer; }
