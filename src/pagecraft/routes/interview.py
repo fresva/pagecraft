@@ -58,6 +58,7 @@ async def interview_page(request: Request, page_id: int):
             "page_id": page.id,
             "uri_token": page.uri_token,
             "agenda_items": interview_ordered(registry),
+            "labels": {c.type: c.label for c in registry},
             "chat_messages": chat_messages,
             "components_html": components_html,
             "component_statuses": component_statuses,

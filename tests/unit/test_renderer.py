@@ -79,35 +79,39 @@ def test_situation_renders_custom_data(jinja_env):
 
 # --- KPIs ---
 
-def test_kpis_renders_three_cells(jinja_env):
+def test_kpis_empty_renders_no_cells(jinja_env):
     template = jinja_env.get_template("components/kpis.html")
     html = template.render()
-    assert html.count("kpi-cell") == 3
-    assert "CO2 KPI" in html
-    assert "Lönsamhet" in html
-    assert "Investeringar" in html
+    assert html.count("kpi-cell") == 0
 
 
-def test_kpis_renders_custom_values(jinja_env):
+def test_kpis_renders_variable_count(jinja_env):
     template = jinja_env.get_template("components/kpis.html")
-    html = template.render(
-        co2_kpis={"value": "-30%", "description": "Minskade utsläpp"},
-        profitability={"value": "2x", "description": "ROI"},
-        investment={"value": "5 MSEK", "description": "Total investering"},
-    )
+    html = template.render(items=[
+        {"label": "CO2", "value": "-30%", "description": "Minskade utsläpp"},
+        {"label": "ROI", "value": "2x", "description": "Avkastning"},
+    ])
+    assert html.count("kpi-cell") == 2
     assert "-30%" in html
     assert "Minskade utsläpp" in html
     assert "2x" in html
-    assert "5 MSEK" in html
 
 
 # --- Impact ---
 
-def test_impact_renders_three_cards(jinja_env):
+def test_impact_empty_renders_no_cards(jinja_env):
     template = jinja_env.get_template("components/impact.html")
     html = template.render()
-    assert html.count("impact-card") == 3
-    # autoescape turns the literal ">" in the default value into "&gt;"
+    assert html.count("impact-card") == 0
+
+
+def test_impact_renders_variable_count(jinja_env):
+    template = jinja_env.get_template("components/impact.html")
+    html = template.render(items=[
+        {"label": "CO2", "value": ">50%", "description": "Stor minskning"},
+    ])
+    assert html.count("impact-card") == 1
+    # autoescape turns the literal ">" into "&gt;"
     assert "&gt;50%" in html
 
 
@@ -145,19 +149,40 @@ def test_resources_renders_custom_data(jinja_env):
 
 # --- Getting Started ---
 
-def test_getting_started_renders_three_steps(jinja_env):
+def test_getting_started_empty_renders_no_steps(jinja_env):
     template = jinja_env.get_template("components/getting_started.html")
     html = template.render()
+    assert html.count("step-card") == 0
+
+
+def test_getting_started_numbers_from_position(jinja_env):
+    template = jinja_env.get_template("components/getting_started.html")
+    html = template.render(steps=[
+        {"title": "Först", "description": "A"},
+        {"title": "Sen", "description": "B"},
+        {"title": "Sist", "description": "C"},
+    ])
     assert html.count("step-card") == 3
+    assert ">1<" in html and ">2<" in html and ">3<" in html
 
 
 # --- Personas ---
 
-def test_personas_renders_defaults(jinja_env):
+def test_personas_empty_renders_no_cards(jinja_env):
     template = jinja_env.get_template("components/personas.html")
     html = template.render()
-    assert "Kommunplanerare" in html
-    assert html.count("persona-card") == 3
+    assert html.count("persona-card") == 0
+
+
+def test_personas_renders_variable_count(jinja_env):
+    template = jinja_env.get_template("components/personas.html")
+    html = template.render(personas=[
+        {"role": "Planerare", "benefit": "Bättre underlag", "quote": "Toppen"},
+        {"role": "Politiker", "benefit": "Tydligare beslut"},
+    ])
+    assert html.count("persona-card") == 2
+    assert "Planerare" in html
+    assert "Toppen" in html
 
 
 # --- Contact ---

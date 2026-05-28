@@ -15,11 +15,16 @@ async def preview_page(request: Request, uri_token: str):
     if not page:
         raise HTTPException(status_code=404, detail="Page not found")
 
+    registry = request.app.state.component_registry
     components = await get_page_components(db, page.id)
     components_html = {c.component_type: c.html for c in components}
 
     return templates.TemplateResponse(
         request,
         "preview.html",
-        {"page": page, "components_html": components_html},
+        {
+            "page": page,
+            "components_html": components_html,
+            "labels": {c.type: c.label for c in registry},
+        },
     )

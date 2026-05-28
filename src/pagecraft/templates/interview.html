@@ -23,7 +23,9 @@
         {{ html | safe }}
     </div>
     {% else %}
-    <div id="component-{{ type }}" class="component-slot"></div>
+    <div id="component-{{ type }}" class="component-slot component-empty">
+        <span class="component-empty-label">{{ labels.get(type, type) if labels else type }} — ännu inte ifylld</span>
+    </div>
     {% endif %}
 {%- endmacro %}
 

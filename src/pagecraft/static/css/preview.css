@@ -28,6 +28,22 @@
     color: var(--color-text);
 }
 
+/* === Empty (not yet filled) component === */
+.component-empty {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    text-align: center;
+}
+
+.component-empty-label {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
 /* === Hero === */
 .component-hero {
     padding: 2rem 0;

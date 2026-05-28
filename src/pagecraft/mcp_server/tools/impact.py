@@ -1,4 +1,4 @@
-"""MCP tool: write_impact — renders the impact assessment section."""
+"""MCP tool: write_impact — renders the impact assessment section as a list."""
 import json
 
 from pagecraft.mcp_server.server import mcp
@@ -7,24 +7,20 @@ from pagecraft.mcp_server.renderer import render_component
 
 @mcp.tool()
 def write_impact(
-    co2_reduction: dict,
-    cost_benefit: dict,
-    spread_potential: dict,
+    items: list[dict],
     annotations: list[dict] | None = None,
 ) -> str:
-    """Render the impact assessment section with three impact cards.
+    """Render the impact assessment section with one or more impact dimensions.
 
     Args:
-        co2_reduction: {value, description} for CO2 reduction potential
-        cost_benefit: {value, description} for cost-benefit analysis
-        spread_potential: {value, description} for spread potential
+        items: List of {label, value, description} dicts. The three standard
+            lenses are CO2e-minskningspotential, Klimat för pengarna and
+            Spridningspotential — use them as labels when they apply, but only
+            include the dimensions the interview actually covered. Do not pad
+            to three if the material only supports two.
         annotations: Optional list of {field, text, severity} annotations
     """
-    data = {
-        "co2_reduction": co2_reduction,
-        "cost_benefit": cost_benefit,
-        "spread_potential": spread_potential,
-    }
+    data = {"items": items}
     html = render_component("components/impact.html", data)
     return json.dumps({
         "html": html,

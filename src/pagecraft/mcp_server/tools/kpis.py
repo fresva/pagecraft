@@ -1,4 +1,4 @@
-"""MCP tool: write_kpis — renders the KPI section with three specific cells."""
+"""MCP tool: write_kpis — renders the KPI section as a list of indicators."""
 import json
 
 from pagecraft.mcp_server.server import mcp
@@ -7,24 +7,19 @@ from pagecraft.mcp_server.renderer import render_component
 
 @mcp.tool()
 def write_kpis(
-    co2_kpis: dict,
-    profitability: dict,
-    investment: dict,
+    items: list[dict],
     annotations: list[dict] | None = None,
 ) -> str:
-    """Render the KPI section with three quantitative indicators.
+    """Render the KPI section with one or more quantitative indicators.
 
     Args:
-        co2_kpis: {value, description} for CO2 key performance indicators
-        profitability: {value, description} for profitability/cost analysis
-        investment: {value, description} for investment requirements
+        items: List of {label, value, description} dicts. Typical labels are
+            CO2-besparing, Lönsamhet/ROI and Investering, but use whatever the
+            interviewee actually provides. Report only the KPIs they can give —
+            one or more — and do not invent figures to reach a fixed count.
         annotations: Optional list of {field, text, severity} annotations
     """
-    data = {
-        "co2_kpis": co2_kpis,
-        "profitability": profitability,
-        "investment": investment,
-    }
+    data = {"items": items}
     html = render_component("components/kpis.html", data)
     return json.dumps({
         "html": html,

@@ -6,7 +6,9 @@
     {% if components_html and components_html.get(type) %}
         {{ components_html[type] | safe }}
     {% else %}
-        {% include "components/" ~ type ~ ".html" %}
+        <div class="component-empty">
+            <span class="component-empty-label">{{ labels.get(type, type) if labels else type }} — ännu inte ifylld</span>
+        </div>
     {% endif %}
 {%- endmacro %}
 

@@ -76,35 +76,64 @@ def test_situation_data_json():
 
 # --- write_kpis ---
 
-def test_kpis_renders_three_cells():
+def test_kpis_renders_items():
     from pagecraft.mcp_server.tools.kpis import write_kpis
     result = _call_tool(
         write_kpis,
-        co2_kpis={"value": "50%", "description": "Minskning"},
-        profitability={"value": "Hög", "description": "Bra ROI"},
-        investment={"value": "2M SEK", "description": "Initial investering"},
+        items=[
+            {"label": "CO2-besparing", "value": "50%", "description": "Minskning"},
+            {"label": "Lönsamhet", "value": "Hög", "description": "Bra ROI"},
+            {"label": "Investering", "value": "2M SEK", "description": "Initial investering"},
+        ],
     )
+    assert "CO2-besparing" in result["html"]
     assert "50%" in result["html"]
-    assert "Hög" in result["html"]
     assert "2M SEK" in result["html"]
+    assert result["html"].count("kpi-cell") == 3
     assert result["component_type"] == "kpis"
+
+
+def test_kpis_renders_two_items_without_padding():
+    from pagecraft.mcp_server.tools.kpis import write_kpis
+    result = _call_tool(
+        write_kpis,
+        items=[
+            {"label": "CO2-besparing", "value": "50%", "description": "Minskning"},
+            {"label": "Investering", "value": "2M SEK", "description": "Investering"},
+        ],
+    )
+    assert result["html"].count("kpi-cell") == 2
 
 
 # --- write_impact ---
 
-def test_impact_renders_three_cards():
+def test_impact_renders_items():
     from pagecraft.mcp_server.tools.impact import write_impact
     result = _call_tool(
         write_impact,
-        co2_reduction={"value": ">50%", "description": "Stor minskning"},
-        cost_benefit={"value": "Hög", "description": "Positiv"},
-        spread_potential={"value": "290 kommuner", "description": "Alla kommuner"},
+        items=[
+            {"label": "CO2e-minskningspotential", "value": ">50%", "description": "Stor minskning"},
+            {"label": "Klimat för pengarna", "value": "Hög", "description": "Positiv"},
+            {"label": "Spridningspotential", "value": "290 kommuner", "description": "Alla kommuner"},
+        ],
     )
     # autoescape turns ">" into "&gt;" in the rendered HTML
     assert "&gt;50%" in result["html"]
-    assert "Hög" in result["html"]
-    assert "290 kommuner" in result["html"]
+    assert "Spridningspotential" in result["html"]
+    assert result["html"].count("impact-card") == 3
     assert result["component_type"] == "impact"
+
+
+def test_impact_renders_two_items_without_padding():
+    from pagecraft.mcp_server.tools.impact import write_impact
+    result = _call_tool(
+        write_impact,
+        items=[
+            {"label": "CO2e-minskningspotential", "value": "30%", "description": "Minskning"},
+            {"label": "Klimat för pengarna", "value": "Hög", "description": "Positiv"},
+        ],
+    )
+    assert result["html"].count("impact-card") == 2
 
 
 # --- write_implementation ---
@@ -141,13 +170,28 @@ def test_getting_started_renders_steps():
     result = _call_tool(
         write_getting_started,
         steps=[
-            {"number": 1, "title": "Steg ett", "description": "Gör detta"},
-            {"number": 2, "title": "Steg två", "description": "Sen detta"},
-            {"number": 3, "title": "Steg tre", "description": "Till sist"},
+            {"title": "Steg ett", "description": "Gör detta"},
+            {"title": "Steg två", "description": "Sen detta"},
+            {"title": "Steg tre", "description": "Till sist"},
         ],
     )
     assert "Steg ett" in result["html"]
+    assert result["html"].count("step-card") == 3
     assert result["component_type"] == "getting_started"
+
+
+def test_getting_started_numbers_from_position():
+    from pagecraft.mcp_server.tools.getting_started import write_getting_started
+    result = _call_tool(
+        write_getting_started,
+        steps=[
+            {"title": "Först", "description": "A"},
+            {"title": "Sen", "description": "B"},
+        ],
+    )
+    # step numbers come from loop position, not a passed-in field
+    assert result["html"].count("step-card") == 2
+    assert ">1<" in result["html"] and ">2<" in result["html"]
 
 
 # --- write_personas ---
@@ -162,7 +206,17 @@ def test_personas_renders():
         ],
     )
     assert "Planerare" in result["html"]
+    assert result["html"].count("persona-card") == 2
     assert result["component_type"] == "personas"
+
+
+def test_personas_renders_single_without_padding():
+    from pagecraft.mcp_server.tools.personas import write_personas
+    result = _call_tool(
+        write_personas,
+        personas=[{"role": "Planerare", "benefit": "Bättre underlag"}],
+    )
+    assert result["html"].count("persona-card") == 1
 
 
 # --- write_contact ---
@@ -206,8 +260,8 @@ def test_all_tools_return_required_fields():
         (write_hero, {"title": "T", "description": "D"}),
         (write_metadata, {"municipality": "M", "sector": "S", "twin_transition": "TT", "themes": ["T"], "technical_solution": ["TS"]}),
         (write_situation, {"current_situation": "A", "challenge": "B", "solution": "C"}),
-        (write_kpis, {"co2_kpis": {"value": "V", "description": "D"}, "profitability": {"value": "V", "description": "D"}, "investment": {"value": "V", "description": "D"}}),
-        (write_impact, {"co2_reduction": {"value": "V", "description": "D"}, "cost_benefit": {"value": "V", "description": "D"}, "spread_potential": {"value": "V", "description": "D"}}),
+        (write_kpis, {"items": [{"label": "L", "value": "V", "description": "D"}]}),
+        (write_impact, {"items": [{"label": "L", "value": "V", "description": "D"}]}),
         (write_implementation, {"heading": "H", "body_text": "B"}),
         (write_resources, {"heading": "H", "body_text": "B"}),
         (write_getting_started, {"steps": [{"number": 1, "title": "S", "description": "D"}]}),

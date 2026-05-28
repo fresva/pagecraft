@@ -66,16 +66,8 @@ async def test_all_tools_callable_with_minimal_args(bridge):
             "themes": ["T1"], "technical_solution": ["TS1"],
         },
         "write_situation": {"current_situation": "C", "challenge": "Ch", "solution": "S"},
-        "write_kpis": {
-            "co2_kpis": {"value": "V", "description": "D"},
-            "profitability": {"value": "V", "description": "D"},
-            "investment": {"value": "V", "description": "D"},
-        },
-        "write_impact": {
-            "co2_reduction": {"value": "V", "description": "D"},
-            "cost_benefit": {"value": "V", "description": "D"},
-            "spread_potential": {"value": "V", "description": "D"},
-        },
+        "write_kpis": {"items": [{"label": "L", "value": "V", "description": "D"}]},
+        "write_impact": {"items": [{"label": "L", "value": "V", "description": "D"}]},
         "write_implementation": {"heading": "H", "body_text": "B"},
         "write_resources": {"heading": "H", "body_text": "B"},
         "write_getting_started": {"steps": [{"number": 1, "title": "T", "description": "D"}]},

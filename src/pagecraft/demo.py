@@ -42,9 +42,11 @@ DEMO_SEQUENCE = [
         "component": "kpis",
         "tool": "write_kpis",
         "tool_args": {
-            "co2_kpis": {"value": ">50%", "description": "Reduktion av nettoutsläpp genom kombinerade åtgärder"},
-            "profitability": {"value": "Hög", "description": "Flera åtgärder har positiv kostnads-nyttobalans"},
-            "investment": {"value": "2,5 MSEK", "description": "Total investering inklusive licens och utbildning"},
+            "items": [
+                {"label": "CO2-besparing", "value": ">50%", "description": "Reduktion av nettoutsläpp genom kombinerade åtgärder"},
+                {"label": "Lönsamhet", "value": "Hög", "description": "Flera åtgärder har positiv kostnads-nyttobalans"},
+                {"label": "Investering", "value": "2,5 MSEK", "description": "Total investering inklusive licens och utbildning"},
+            ],
         },
         "bot_reply": "Jag har sammanställt nyckeltalen. Stämmer siffrorna?",
     },
@@ -53,9 +55,11 @@ DEMO_SEQUENCE = [
         "component": "impact",
         "tool": "write_impact",
         "tool_args": {
-            "co2_reduction": {"value": ">50%", "description": "Kombinerade åtgärder kan minska nettoutsläppen med mer än hälften."},
-            "cost_benefit": {"value": "Hög", "description": "Flera åtgärder har positiv kostnads-nyttobalans."},
-            "spread_potential": {"value": "290 kommuner", "description": "Kan användas av alla Sveriges kommuner."},
+            "items": [
+                {"label": "CO2e-minskningspotential", "value": ">50%", "description": "Kombinerade åtgärder kan minska nettoutsläppen med mer än hälften."},
+                {"label": "Klimat för pengarna", "value": "Hög", "description": "Flera åtgärder har positiv kostnads-nyttobalans."},
+                {"label": "Spridningspotential", "value": "290 kommuner", "description": "Kan användas av alla Sveriges kommuner."},
+            ],
         },
         "bot_reply": "Här är effektbedömningen. Stämmer siffrorna?",
     },
@@ -75,9 +79,9 @@ DEMO_SEQUENCE = [
         "tool": "write_getting_started",
         "tool_args": {
             "steps": [
-                {"number": 1, "title": "Licensiering och dataimport", "description": "Skaffa licens och importera kommunens grunddata."},
-                {"number": 2, "title": "Pilotprojekt", "description": "Genomför pilotberäkningar på ett pågående planeringsprojekt."},
-                {"number": 3, "title": "Åtgärdsanalys", "description": "Analysera åtgärdsalternativ och integrera i processen."},
+                {"title": "Licensiering och dataimport", "description": "Skaffa licens och importera kommunens grunddata."},
+                {"title": "Pilotprojekt", "description": "Genomför pilotberäkningar på ett pågående planeringsprojekt."},
+                {"title": "Åtgärdsanalys", "description": "Analysera åtgärdsalternativ och integrera i processen."},
             ],
         },
         "bot_reply": "Jag har skapat en tre-stegsguide. Stämmer processen?",
