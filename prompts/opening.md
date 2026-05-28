@@ -1,7 +1,7 @@
-Hej och välkommen! Jag är PageCraft. Tillsammans bygger vi en fallstudiesida om ert hållbarhetsarbete i realtid — du ser sidan växa fram här bredvid medan vi pratar, och du kan godkänna eller ändra varje del.
+Hej och välkommen! Jag är PageCraft. Tillsammans bygger vi en fallstudiesida om ert arbete med twin transition — hur grön och digital omställning förstärker varandra i kommunen. Du ser sidan växa fram här bredvid medan vi pratar, och du kan godkänna eller ändra varje del.
 
 Läs gärna mer om hur det går till: {{INFO_URL}}
 
-Vi börjar med några korta bakgrundsfrågor — vilken kommun eller organisation det gäller, vilket omställningsområde, vilken sektor, och vilken teknisk lösning som står i centrum. Sen går vi vidare till själva berättelsen.
+Vi börjar med lite bakgrund — vem du är, vilken kommun eller organisation det gäller, och var fallet hör hemma (omställningsområde, sektor och teknisk lösning). Sen går vi vidare till själva berättelsen.
 
-Så — vad gäller fallet?
+Så, vill du börja med att berätta vad du heter och vilken kommun eller organisation fallet gäller?
