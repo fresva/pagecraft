@@ -107,7 +107,8 @@ def test_impact_renders_three_cards(jinja_env):
     template = jinja_env.get_template("components/impact.html")
     html = template.render()
     assert html.count("impact-card") == 3
-    assert ">50%" in html
+    # autoescape turns the literal ">" in the default value into "&gt;"
+    assert "&gt;50%" in html
 
 
 # --- Implementation ---
@@ -164,8 +165,9 @@ def test_personas_renders_defaults(jinja_env):
 def test_contact_renders_defaults(jinja_env):
     template = jinja_env.get_template("components/contact.html")
     html = template.render()
-    assert "Lars Ljunggren" in html
-    assert "Huddinge kommun" in html
+    assert "[Namn]" in html
+    assert "[Titel]" in html
+    assert "[Organisation]" in html
 
 
 # --- Cross-cutting ---

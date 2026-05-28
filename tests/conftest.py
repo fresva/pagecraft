@@ -33,6 +33,7 @@ def jinja_env():
     env = Environment(
         loader=FileSystemLoader(templates_dir),
         undefined=ChainableUndefined,
+        autoescape=True,
     )
     return env
 

@@ -100,7 +100,8 @@ def test_impact_renders_three_cards():
         cost_benefit={"value": "Hög", "description": "Positiv"},
         spread_potential={"value": "290 kommuner", "description": "Alla kommuner"},
     )
-    assert ">50%" in result["html"]
+    # autoescape turns ">" into "&gt;" in the rendered HTML
+    assert "&gt;50%" in result["html"]
     assert "Hög" in result["html"]
     assert "290 kommuner" in result["html"]
     assert result["component_type"] == "impact"

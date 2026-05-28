@@ -1,3 +1,4 @@
+import html
 import json
 import logging
 
@@ -22,14 +23,15 @@ async def send_chat_html(ws: WebSocket, role: str, text: str) -> None:
     """Send a chat bubble via OOB swap."""
     role_label = "PageCraft" if role == "assistant" else "Du"
     css_class = f"chat-{role}"
-    html = (
+    safe_text = html.escape(text or "")
+    chat_html = (
         f'<div id="chat-messages" hx-swap-oob="beforeend">'
         f'<div class="chat-bubble {css_class}">'
         f'<div class="chat-role">{role_label}</div>'
-        f'<div class="chat-text">{text}</div>'
+        f'<div class="chat-text">{safe_text}</div>'
         f'</div></div>'
     )
-    await ws.send_json({"type": "chat", "html": html})
+    await ws.send_json({"type": "chat", "html": chat_html})
 
 
 async def send_component_html(
