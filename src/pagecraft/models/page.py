@@ -7,7 +7,7 @@ class Page:
     id: int | None = None
     uri_token: str = ""
     title: str | None = None
-    status: str = "active"
+    status: str = "in_interview"
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
@@ -35,4 +35,7 @@ class Annotation:
     severity: str = "verify"
     resolved: bool = False
     resolved_at: datetime | None = None
+    decision: str = "pending"
+    curator_note: str | None = None
+    resolved_by: str | None = None
     created_at: datetime | None = None

@@ -11,6 +11,7 @@ from pagecraft.services.page_service import (
     get_page_components,
     save_component,
     update_component_status,
+    update_page_status,
 )
 
 logger = logging.getLogger(__name__)
@@ -178,9 +179,10 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
                 await send_typing_indicator(websocket, False)
 
             elif msg_type == "end_interview":
-                # Phase 1: acknowledge and close the chat UI.
-                # TODO(Phase 3): transition page status to 'awaiting_review' and
-                # trigger the post-processing annotation pass before researcher review.
+                # Move the page into the review queue and close the chat UI.
+                # TODO(3.2): trigger the post-processing annotation pass here
+                # before the researcher reviews.
+                await update_page_status(db, page_id, "awaiting_review")
                 await send_chat_html(
                     websocket, "assistant",
                     "Tack! Intervjun är avslutad. Sidan lämnas nu vidare för "

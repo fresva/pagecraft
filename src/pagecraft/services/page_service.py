@@ -14,11 +14,19 @@ def _generate_uri_token() -> str:
 async def create_page(db: aiosqlite.Connection, title: str | None = None) -> Page:
     uri_token = _generate_uri_token()
     cursor = await db.execute(
-        "INSERT INTO pages (uri_token, title) VALUES (?, ?)",
+        "INSERT INTO pages (uri_token, title, status) VALUES (?, ?, 'in_interview')",
         (uri_token, title),
     )
     await db.commit()
-    return Page(id=cursor.lastrowid, uri_token=uri_token, title=title)
+    return Page(id=cursor.lastrowid, uri_token=uri_token, title=title, status="in_interview")
+
+
+async def update_page_status(db: aiosqlite.Connection, page_id: int, status: str) -> None:
+    await db.execute(
+        "UPDATE pages SET status = ?, updated_at = ? WHERE id = ?",
+        (status, datetime.now().isoformat(), page_id),
+    )
+    await db.commit()
 
 
 async def get_page(db: aiosqlite.Connection, page_id: int) -> Page | None:
