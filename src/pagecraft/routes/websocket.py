@@ -5,7 +5,9 @@ import logging
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from pagecraft.registry import ComponentDef, interview_ordered
+from pagecraft.services.edit_form import apply_edits, build_edit_form_html
 from pagecraft.services.page_service import (
+    get_component,
     get_page_components,
     save_component,
     update_component_status,
@@ -43,18 +45,22 @@ async def send_component_html(
     status_label = status.capitalize()
     badge_class = f"badge-{status}"
 
+    buttons = []
     if status == "draft":
-        action_btn = (
+        buttons.append(
             f'<button class="btn-agree" onclick="sendComponentAction({component_id}, \'agree\')">'
             f'Godkänn</button>'
         )
     elif status == "agreed":
-        action_btn = (
+        buttons.append(
             f'<button class="btn-revise" onclick="sendComponentAction({component_id}, \'revise\')">'
             f'Ändra</button>'
         )
-    else:
-        action_btn = ""
+    if component_id is not None:
+        buttons.append(
+            f'<button class="btn-edit" onclick="requestEdit({component_id})">Ändra fält</button>'
+        )
+    action_btn = "".join(buttons)
 
     html = (
         f'<div id="component-{component_type}" hx-swap-oob="true"'
@@ -181,6 +187,49 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
                     "granskning av en forskare innan publicering.",
                 )
                 await send_interview_closed(websocket)
+
+            elif msg_type == "edit_request":
+                component_id = msg.get("component_id")
+                component = await get_component(db, component_id) if component_id else None
+                if component:
+                    comp_def = next((c for c in registry if c.type == component.component_type), None)
+                    label = comp_def.label if comp_def else component.component_type
+                    try:
+                        data = json.loads(component.data_json)
+                    except (TypeError, json.JSONDecodeError):
+                        data = {}
+                    form_html = build_edit_form_html(component_id, label, data)
+                    await websocket.send_json({"type": "edit_form", "html": form_html})
+
+            elif msg_type == "component_edit":
+                component_id = msg.get("component_id")
+                fields = msg.get("fields") or {}
+                component = await get_component(db, component_id) if component_id else None
+                comp_def = (
+                    next((c for c in registry if c.type == component.component_type), None)
+                    if component else None
+                )
+                if component and comp_def and mcp_bridge:
+                    try:
+                        data = json.loads(component.data_json)
+                    except (TypeError, json.JSONDecodeError):
+                        data = {}
+                    edited = apply_edits(data, fields)
+                    result = await mcp_bridge.call_tool(comp_def.tool, edited)
+                    saved = await save_component(
+                        db, page_id=page_id, component_type=component.component_type,
+                        display_order=comp_def.page_order, html=result["html"],
+                        data_json=result["data_json"],
+                    )
+                    await send_component_html(
+                        websocket, component.component_type, result["html"], "draft", saved.id,
+                    )
+                    # The bot picks up this edit automatically: the engine rebuilds
+                    # its per-turn status block from the DB, which now reflects the
+                    # new content. No separate edit note needed.
+                    comps = await get_page_components(db, page_id)
+                    statuses = {c.component_type: c.status for c in comps}
+                    await send_agenda_html(websocket, registry, statuses)
 
             elif msg_type == "component_action":
                 component_id = msg.get("component_id")

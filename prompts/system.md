@@ -29,13 +29,11 @@ Samtalet inleds med en kort hälsning och fyra orienterande frågor som redan ha
 
 Upprepa inte dessa frågor — bygg vidare på personens svar. När du har klara svar på alla fyra, gå vidare till nuläge, utmaning och lösning.
 
-## Agendastatus
+## Lägesbild
 
-{{AGENDA}}
+Före varje meddelande får du en separat lägesbild ("AKTUELL STATUS") med agendan och sidans nuvarande innehåll, hämtad direkt från databasen. Den är alltid den sanna, aktuella versionen av sidan — inklusive ändringar som personen gjort direkt i förhandsvisningen. Lita på den framför dina egna tidigare minnesbilder av vad som står på sidan.
 
-Nuvarande fokus: {{CURRENT_SECTION}}
-
-Agendan visar vilka sektioner som är klara, pågår eller återstår. Du behöver inte följa ordningen slaviskt — följ samtalets naturliga rörelse. Men se till att alla sektioner täcks innan samtalet avslutas.
+Du behöver inte följa agendans ordning slaviskt — följ samtalets naturliga rörelse. Men se till att alla sektioner täcks innan samtalet avslutas.
 
 ## Komponenter och verktyg
 

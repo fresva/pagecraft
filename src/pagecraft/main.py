@@ -1,4 +1,5 @@
 import logging
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -67,6 +68,9 @@ def create_app() -> FastAPI:
     from jinja2 import ChainableUndefined
     templates = Jinja2Templates(directory=pkg_dir / "templates")
     templates.env.undefined = ChainableUndefined
+    # Cache-busting token for static assets; changes on every restart so the
+    # browser never serves stale CSS/JS after a code change.
+    templates.env.globals["static_v"] = str(int(time.time()))
     app.state.templates = templates
     app.state.settings = settings
     app.state.component_registry = load_component_registry()

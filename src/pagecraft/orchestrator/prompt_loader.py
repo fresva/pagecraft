@@ -18,12 +18,14 @@ class PromptLoader:
             self._cache[filename] = path.read_text(encoding="utf-8") if path.exists() else ""
         return self._cache[filename]
 
-    def system_prompt(self, agenda_state: str, current_section: str = "") -> str:
-        """Return system.md with dynamic state injected."""
-        content = self._load("system.md")
-        content = content.replace("{{AGENDA}}", agenda_state)
-        content = content.replace("{{CURRENT_SECTION}}", current_section)
-        return content
+    def system_prompt(self) -> str:
+        """Return the static system prompt.
+
+        Dynamic state (agenda + current page content) is no longer injected here
+        — the engine adds it as a separate status message each turn so this prompt
+        stays byte-identical between turns and remains prompt-cacheable.
+        """
+        return self._load("system.md")
 
     def annotation_guidance(self) -> str:
         """Return annotation instructions."""

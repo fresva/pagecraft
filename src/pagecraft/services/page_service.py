@@ -103,6 +103,14 @@ async def add_conversation_message(
     await db.commit()
 
 
+async def get_component(db: aiosqlite.Connection, component_id: int) -> Component | None:
+    cursor = await db.execute("SELECT * FROM components WHERE id = ?", (component_id,))
+    row = await cursor.fetchone()
+    if not row:
+        return None
+    return Component(**dict(row))
+
+
 async def get_page_components(db: aiosqlite.Connection, page_id: int) -> list[Component]:
     cursor = await db.execute(
         "SELECT * FROM components WHERE page_id = ? ORDER BY display_order",

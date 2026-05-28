@@ -157,6 +157,37 @@ def test_websocket_revise_after_agree(client):
     assert "badge-draft" in revise_comp["html"]
 
 
+def test_websocket_edit_component(client):
+    """Edit flow: request the form, submit a field change, get an updated draft."""
+    page_id = _create_page_and_get_id(client)
+
+    with client.websocket_connect(f"/ws/{page_id}") as ws:
+        # "Hej" triggers the situation component in demo mode
+        ws.send_text(json.dumps({"type": "chat", "text": "Hej"}))
+        messages = _collect_messages(ws, DEMO_MSG_COUNT)
+        comp_msg = next(m for m in messages if m["type"] == "component")
+        component_id = int(re.search(r"requestEdit\((\d+)\)", comp_msg["html"]).group(1))
+
+        # Request the edit form
+        ws.send_text(json.dumps({"type": "edit_request", "component_id": component_id}))
+        form_msg = json.loads(ws.receive_text())
+        assert form_msg["type"] == "edit_form"
+        assert 'id="edit-form"' in form_msg["html"]
+        assert 'name="current_situation"' in form_msg["html"]
+
+        # Submit an edited value
+        ws.send_text(json.dumps({
+            "type": "component_edit",
+            "component_id": component_id,
+            "fields": {"current_situation": "Helt nytt nuläge"},
+        }))
+        edit_msgs = _collect_messages(ws, 2)  # component + agenda
+
+    comp = next(m for m in edit_msgs if m["type"] == "component")
+    assert "Helt nytt nuläge" in comp["html"]
+    assert "badge-draft" in comp["html"]
+
+
 def test_websocket_multiple_components(client):
     """Sequential messages render different components."""
     page_id = _create_page_and_get_id(client)

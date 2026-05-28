@@ -8,24 +8,23 @@ PROMPTS_DIR = Path(__file__).parent.parent.parent / "prompts"
 
 def test_system_prompt_loads():
     loader = PromptLoader(PROMPTS_DIR)
-    result = loader.system_prompt(agenda_state="test-agenda", current_section="Intro")
-    assert "test-agenda" in result
-    assert "Intro" in result
+    result = loader.system_prompt()
+    assert len(result) > 0
+    assert "PageCraft" in result
 
 
-def test_system_prompt_replaces_placeholders():
+def test_system_prompt_has_no_legacy_placeholders():
+    """Dynamic state is injected by the engine now, not via template tokens."""
     loader = PromptLoader(PROMPTS_DIR)
-    result = loader.system_prompt(agenda_state="[x] Done", current_section="Nyckeltal")
+    result = loader.system_prompt()
     assert "{{AGENDA}}" not in result
     assert "{{CURRENT_SECTION}}" not in result
-    assert "[x] Done" in result
-    assert "Nyckeltal" in result
 
 
 def test_system_prompt_contains_interview_guidance():
     """The unified prompt should contain guidance for all component types."""
     loader = PromptLoader(PROMPTS_DIR)
-    result = loader.system_prompt(agenda_state="", current_section="")
+    result = loader.system_prompt()
     assert "write_situation" in result
     assert "write_hero" in result
     assert "write_kpis" in result
@@ -41,7 +40,7 @@ def test_system_prompt_contains_interview_guidance():
 def test_system_prompt_mentions_synthesis_components():
     """Hero and metadata are synthesis components — prompt should indicate that."""
     loader = PromptLoader(PROMPTS_DIR)
-    result = loader.system_prompt(agenda_state="", current_section="")
+    result = loader.system_prompt()
     assert "syntes" in result.lower()
 
 
@@ -55,7 +54,7 @@ def test_annotation_guidance_loads():
 def test_loader_with_missing_dir():
     """PromptLoader with nonexistent dir returns empty strings."""
     loader = PromptLoader(Path("/nonexistent/path"))
-    assert loader.system_prompt("x") == ""
+    assert loader.system_prompt() == ""
     assert loader.annotation_guidance() == ""
 
 

@@ -221,3 +221,119 @@
     color: var(--color-text-muted, #6b7280);
     font-size: 0.9rem;
 }
+
+/* === Edit field button + modal === */
+.btn-edit {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-edit:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+}
+
+.edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-modal[hidden] {
+    display: none;
+}
+
+.edit-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.edit-modal-panel {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    max-width: 540px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+#edit-form h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.edit-field {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.edit-field span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.edit-field input,
+.edit-field textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.edit-group {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.edit-group legend {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0 0.4rem;
+    color: var(--color-text-muted);
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.btn-save-edit {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-cancel-edit {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+}

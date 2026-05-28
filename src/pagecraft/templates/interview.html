@@ -3,7 +3,7 @@
 {% block title %}PageCraft — Intervju{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/chat.css">
+<link rel="stylesheet" href="/static/css/chat.css?v={{ static_v }}">
 {% endblock %}
 
 {% macro component_slot(type) -%}
@@ -19,6 +19,7 @@
             {% elif status == "agreed" %}
             <button class="btn-revise" onclick="sendComponentAction({{ cid }}, 'revise')">Ändra</button>
             {% endif %}
+            <button class="btn-edit" onclick="requestEdit({{ cid }})">Ändra fält</button>
         </div>
         {{ html | safe }}
     </div>
@@ -105,10 +106,17 @@
     </div>
 
 </div>
+
+<div id="edit-modal" class="edit-modal" hidden>
+    <div class="edit-modal-backdrop" onclick="closeEditModal()"></div>
+    <div class="edit-modal-panel">
+        <div id="edit-modal-content"></div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="/static/js/pagecraft.js"></script>
+<script src="/static/js/pagecraft.js?v={{ static_v }}"></script>
 <script>
     initWebSocket({{ page_id }});
 </script>

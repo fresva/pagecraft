@@ -73,6 +73,12 @@ function handleServerMessage(data) {
     if (data.type === 'chat') {
         scrollChatToBottom();
     }
+
+    // Open the edit modal once its form content has been swapped in
+    if (data.type === 'edit_form') {
+        const modal = document.getElementById('edit-modal');
+        if (modal) modal.hidden = false;
+    }
 }
 
 function sendChatMessage(event) {
@@ -100,6 +106,30 @@ function sendComponentAction(componentId, action) {
         component_id: componentId,
         action: action
     }));
+}
+
+function requestEdit(componentId) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({ type: 'edit_request', component_id: componentId }));
+}
+
+function saveEdit() {
+    const form = document.getElementById('edit-form');
+    if (!form) return;
+    const componentId = parseInt(form.dataset.componentId, 10);
+    const fields = {};
+    form.querySelectorAll('input[name], textarea[name]').forEach(el => {
+        fields[el.name] = el.value;
+    });
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'component_edit', component_id: componentId, fields: fields }));
+    }
+    closeEditModal();
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('edit-modal');
+    if (modal) modal.hidden = true;
 }
 
 function scrollChatToBottom() {

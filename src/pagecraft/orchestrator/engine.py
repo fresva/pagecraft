@@ -26,6 +26,74 @@ logger = logging.getLogger(__name__)
 MAX_TOOL_ROUNDS = 5
 
 
+_STATUS_LABELS = {"draft": "utkast", "agreed": "godkänd"}
+
+
+def _format_component_data(data: dict) -> str:
+    """Render a component's data_json as compact readable lines for the LLM."""
+    lines: list[str] = []
+    for key, value in data.items():
+        if isinstance(value, str):
+            if value.strip():
+                lines.append(f"- {key}: {value}")
+        elif isinstance(value, list):
+            for i, item in enumerate(value, start=1):
+                if isinstance(item, dict):
+                    parts = "; ".join(
+                        f"{k}: {v}" for k, v in item.items()
+                        if isinstance(v, str) and v.strip()
+                    )
+                    if parts:
+                        lines.append(f"- [{i}] {parts}")
+                elif isinstance(item, str) and item.strip():
+                    lines.append(f"- {key}[{i}]: {item}")
+    return "\n".join(lines)
+
+
+def _build_status_block(
+    registry: list[ComponentDef],
+    agenda: InterviewAgenda,
+    components: list,
+) -> str:
+    """Build the per-turn status message: agenda + true current page content.
+
+    Rebuilt from the DB each turn so it always reflects reality, including
+    manual edits the interviewee made directly in the preview.
+    """
+    labels = {c.type: c.label for c in registry}
+    current = agenda.current_section()
+    parts = [
+        "AKTUELL STATUS (sann, aktuell version av sidan — inklusive manuella "
+        "redigeringar; lita på detta framför dina egna tidigare minnesbilder)",
+        "",
+        "Agenda:",
+        agenda.to_prompt_fragment(),
+        "",
+        f"Nuvarande fokus: {current.label if current else 'Alla sektioner klara'}",
+    ]
+
+    content_blocks = []
+    for comp in components:
+        try:
+            data = json.loads(comp.data_json)
+        except (TypeError, json.JSONDecodeError):
+            continue
+        body = _format_component_data(data)
+        if not body:
+            continue
+        label = labels.get(comp.component_type, comp.component_type)
+        status_sv = _STATUS_LABELS.get(comp.status, comp.status)
+        content_blocks.append(f"\n## {label} ({status_sv})\n{body}")
+
+    if content_blocks:
+        parts.append("\nSidans nuvarande innehåll:")
+        parts.extend(content_blocks)
+    else:
+        parts.append("\nSidan är ännu tom — inga komponenter ifyllda.")
+
+    return "\n".join(parts)
+
+
 async def _load_conversation_history(db: aiosqlite.Connection, page_id: int) -> list[dict]:
     """Load conversation history from DB in OpenAI message format."""
     cursor = await db.execute(
@@ -112,23 +180,26 @@ async def handle_user_message(
     agenda = InterviewAgenda(registry)
     agenda.update_from_db(component_statuses)
 
-    current = agenda.current_section()
-    current_label = current.label if current else "Alla sektioner klara"
-    current_type = current.component_type if current else ""
-
-    # Build system prompt
-    system_content = prompt_loader.system_prompt(
-        agenda_state=agenda.to_prompt_fragment(),
-        current_section=current_label,
-    )
-
+    # Static system prompt (byte-identical between turns → prompt-cacheable)
+    system_content = prompt_loader.system_prompt()
     annotation_guidance = prompt_loader.annotation_guidance()
     if annotation_guidance:
         system_content += f"\n\n{annotation_guidance}"
 
-    # Build messages: system + history
+    # Dynamic status: agenda + true current page content, rebuilt from the DB
+    # each turn (reflects manual edits). Placed at the tail so the static prefix
+    # stays cacheable.
+    status_msg = {
+        "role": "system",
+        "content": _build_status_block(registry, agenda, existing_components),
+    }
+
     history = await _load_conversation_history(db, page_id)
-    messages = [{"role": "system", "content": system_content}] + history
+    system_msg = {"role": "system", "content": system_content}
+    if history:
+        messages = [system_msg] + history[:-1] + [status_msg] + history[-1:]
+    else:
+        messages = [system_msg, status_msg]
 
     # Get tool definitions
     mcp_tools = await mcp_bridge.list_tools()
