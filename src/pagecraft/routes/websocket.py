@@ -1,9 +1,11 @@
+import asyncio
 import html
 import json
 import logging
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from pagecraft.orchestrator.annotator import run_annotation_pass_safe
 from pagecraft.registry import ComponentDef, interview_ordered
 from pagecraft.services.edit_form import apply_edits, build_edit_form_html
 from pagecraft.services.page_service import (
@@ -179,9 +181,9 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
                 await send_typing_indicator(websocket, False)
 
             elif msg_type == "end_interview":
-                # Move the page into the review queue and close the chat UI.
-                # TODO(3.2): trigger the post-processing annotation pass here
-                # before the researcher reviews.
+                # Move the page into the review queue, close the chat UI, and kick
+                # off the annotation pass in the background so the interviewee
+                # isn't kept waiting while the LLM annotates each component.
                 await update_page_status(db, page_id, "awaiting_review")
                 await send_chat_html(
                     websocket, "assistant",
@@ -189,6 +191,9 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
                     "granskning av en forskare innan publicering.",
                 )
                 await send_interview_closed(websocket)
+                asyncio.create_task(
+                    run_annotation_pass_safe(db, page_id, registry, llm_client, prompt_loader)
+                )
 
             elif msg_type == "edit_request":
                 component_id = msg.get("component_id")

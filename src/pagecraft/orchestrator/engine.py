@@ -180,11 +180,10 @@ async def handle_user_message(
     agenda = InterviewAgenda(registry)
     agenda.update_from_db(component_statuses)
 
-    # Static system prompt (byte-identical between turns → prompt-cacheable)
+    # Static system prompt (byte-identical between turns → prompt-cacheable).
+    # Annotation guidance is no longer appended here — annotations are generated
+    # as a post-processing pass after the interview, not inline by the bot.
     system_content = prompt_loader.system_prompt()
-    annotation_guidance = prompt_loader.annotation_guidance()
-    if annotation_guidance:
-        system_content += f"\n\n{annotation_guidance}"
 
     # Dynamic status: agenda + true current page content, rebuilt from the DB
     # each turn (reflects manual edits). Placed at the tail so the static prefix
