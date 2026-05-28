@@ -120,6 +120,17 @@ def test_publish_blocked_until_ready(client):
     assert "måste vara granskade" in rp.text
 
 
+def _publish(client, pid):
+    """Drive a page all the way to published and return its id."""
+    _fill_and_end(client, pid)
+    r = _get_review(client, pid, expect_annotations=True)
+    cid = int(re.search(r"review-comp-(\d+)", r.text).group(1))
+    aid = int(re.search(r"ann-(\d+)", r.text).group(1))
+    client.post(f"/review/{pid}/component/{cid}/review", data={"reviewed": "true"})
+    client.post(f"/review/{pid}/annotation/{aid}", data={"decision": "acknowledged"})
+    client.post(f"/review/{pid}/publish")
+
+
 def test_publish_success(client):
     pid = _new_page(client)
     _fill_and_end(client, pid)
@@ -130,3 +141,23 @@ def test_publish_success(client):
     client.post(f"/review/{pid}/annotation/{aid}", data={"decision": "acknowledged"})
     rp = client.post(f"/review/{pid}/publish")
     assert "Publicerad" in rp.text
+
+
+def test_case_404_before_publish(client):
+    pid = _new_page(client)
+    _fill_and_end(client, pid)
+    assert client.get(f"/case/{pid}").status_code == 404
+
+
+def test_case_view_after_publish(client):
+    pid = _new_page(client)
+    _publish(client, pid)
+    rc = client.get(f"/case/{pid}")
+    assert rc.status_code == 200
+    # filled component content is shown
+    assert "component-situation" in rc.text
+    # no interview/review chrome, no empty-component placeholders
+    assert "chat-input" not in rc.text
+    assert "Ändra fält" not in rc.text
+    assert "Godkänn" not in rc.text
+    assert "ännu inte ifylld" not in rc.text
