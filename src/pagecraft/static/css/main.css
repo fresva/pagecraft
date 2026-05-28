@@ -6,17 +6,22 @@
 }
 
 :root {
-    --color-bg: #f8f9fa;
+    /* Forest-green editorial palette (sustainability, UTTC-adjacent) */
+    --color-bg: #f4f7f2;
     --color-surface: #ffffff;
-    --color-primary: #2563eb;
-    --color-primary-light: #dbeafe;
-    --color-text: #1e293b;
-    --color-text-muted: #64748b;
-    --color-border: #e2e8f0;
+    --color-primary: #1d6b45;
+    --color-primary-light: #e7f1ea;
+    --color-text: #18241d;
+    --color-text-muted: #5d6b62;
+    --color-border: #e0e7e0;
     --color-success: #16a34a;
     --color-warning: #ca8a04;
     --color-danger: #dc2626;
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --c-green-deep: #123f2a;
+    --c-green-bright: #2f9e63;
+    --c-green-wash: #eaf3ec;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-serif: 'Fraunces', Georgia, "Times New Roman", serif;
     --font-size-base: 16px;
     --radius: 8px;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);

@@ -17,6 +17,9 @@ def write_kpis(
             CO2-besparing, Lönsamhet/ROI and Investering, but use whatever the
             interviewee actually provides. Report only the KPIs they can give —
             one or more — and do not invent figures to reach a fixed count.
+            IMPORTANT: `value` is a short headline figure shown in large type
+            (e.g. "35 518 kg CO2e", "~3 milj kr/år", "60 %"). Keep it to a few
+            words; put any explanation in `description`, not in `value`.
         annotations: Optional list of {field, text, severity} annotations
     """
     data = {"items": items}

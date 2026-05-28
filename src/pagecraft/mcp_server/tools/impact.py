@@ -18,6 +18,9 @@ def write_impact(
             Spridningspotential — use them as labels when they apply, but only
             include the dimensions the interview actually covered. Do not pad
             to three if the material only supports two.
+            IMPORTANT: `value` is a short headline figure shown in large type
+            (e.g. ">50 %", "290 kommuner", "Hög"). Keep it brief; put any
+            explanation in `description`, not in `value`.
         annotations: Optional list of {field, text, severity} annotations
     """
     data = {"items": items}
