@@ -92,6 +92,17 @@ async def save_component(
         )
 
 
+async def add_conversation_message(
+    db: aiosqlite.Connection, page_id: int, role: str, content: str
+) -> None:
+    """Insert a plain text conversation message (no tool call metadata)."""
+    await db.execute(
+        "INSERT INTO conversation_messages (page_id, role, content) VALUES (?, ?, ?)",
+        (page_id, role, content),
+    )
+    await db.commit()
+
+
 async def get_page_components(db: aiosqlite.Connection, page_id: int) -> list[Component]:
     cursor = await db.execute(
         "SELECT * FROM components WHERE page_id = ? ORDER BY display_order",

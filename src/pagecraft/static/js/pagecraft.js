@@ -87,6 +87,12 @@ function sendChatMessage(event) {
     return false;
 }
 
+function endInterview() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (!confirm('Avsluta intervjun och lämna sidan för granskning?')) return;
+    ws.send(JSON.stringify({ type: 'end_interview' }));
+}
+
 function sendComponentAction(componentId, action) {
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     ws.send(JSON.stringify({

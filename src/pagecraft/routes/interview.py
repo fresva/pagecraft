@@ -2,7 +2,12 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from pagecraft.registry import interview_ordered
-from pagecraft.services.page_service import create_page, get_page, get_page_components
+from pagecraft.services.page_service import (
+    add_conversation_message,
+    create_page,
+    get_page,
+    get_page_components,
+)
 
 router = APIRouter()
 
@@ -29,6 +34,16 @@ async def interview_page(request: Request, page_id: int):
     )
     rows = await cursor.fetchall()
     chat_messages = [{"role": r["role"], "content": r["content"]} for r in rows]
+
+    # On first visit, persist the scripted opening message so the bot sees it
+    # in conversation history (and won't re-ask the orienting questions).
+    if not chat_messages:
+        loader = request.app.state.prompt_loader
+        settings = request.app.state.settings
+        opening = loader.opening_message(settings.info_url)
+        if opening:
+            await add_conversation_message(db, page.id, "assistant", opening)
+            chat_messages = [{"role": "assistant", "content": opening}]
 
     # Load existing components for the preview panel
     components = await get_page_components(db, page.id)

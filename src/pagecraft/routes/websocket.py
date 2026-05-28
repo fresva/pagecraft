@@ -69,6 +69,16 @@ async def send_component_html(
     await ws.send_json({"type": "component", "html": html})
 
 
+async def send_interview_closed(ws: WebSocket) -> None:
+    """Replace the chat input form with a closed-state notice via OOB swap."""
+    closed_html = (
+        '<form id="chat-form" hx-swap-oob="true" class="chat-input-form chat-closed">'
+        '<span class="chat-closed-text">Intervjun är avslutad.</span>'
+        '</form>'
+    )
+    await ws.send_json({"type": "control", "html": closed_html})
+
+
 async def send_typing_indicator(ws: WebSocket, active: bool, text: str = "Boten tänker...") -> None:
     if active:
         html = (
@@ -160,6 +170,17 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
 
                 # Clear typing indicator
                 await send_typing_indicator(websocket, False)
+
+            elif msg_type == "end_interview":
+                # Phase 1: acknowledge and close the chat UI.
+                # TODO(Phase 3): transition page status to 'awaiting_review' and
+                # trigger the post-processing annotation pass before researcher review.
+                await send_chat_html(
+                    websocket, "assistant",
+                    "Tack! Intervjun är avslutad. Sidan lämnas nu vidare för "
+                    "granskning av en forskare innan publicering.",
+                )
+                await send_interview_closed(websocket)
 
             elif msg_type == "component_action":
                 component_id = msg.get("component_id")

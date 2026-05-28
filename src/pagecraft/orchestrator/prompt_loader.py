@@ -28,3 +28,15 @@ class PromptLoader:
     def annotation_guidance(self) -> str:
         """Return annotation instructions."""
         return self._load("annotation_guidance.md")
+
+    def opening_message(self, info_url: str = "") -> str:
+        """Return the scripted opening message shown to the interviewee.
+
+        If info_url is empty, any line referencing the {{INFO_URL}} placeholder
+        is dropped so no unresolved token reaches the interviewee.
+        """
+        content = self._load("opening.md")
+        if info_url:
+            return content.replace("{{INFO_URL}}", info_url)
+        kept = [line for line in content.splitlines() if "{{INFO_URL}}" not in line]
+        return "\n".join(kept).strip()

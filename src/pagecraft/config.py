@@ -32,6 +32,10 @@ class Settings(BaseSettings):
         default="http://localhost:8000",
         validation_alias=AliasChoices("PAGECRAFT_BASE_URL", "base_url"),
     )
+    info_url: str = Field(
+        default="",
+        validation_alias=AliasChoices("PAGECRAFT_INFO_URL", "info_url"),
+    )
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 
