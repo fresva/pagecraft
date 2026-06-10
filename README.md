@@ -12,6 +12,8 @@ Most "interview-to-content" pipelines treat the interviewee as a **subject** who
 - They catch misrepresentations the moment they appear, not in a correction cycle weeks later.
 - The output has higher legitimacy because they signed off on each piece as it was written.
 
+The point is not to mimic or replace a researcher's interpretive analysis. It is to give a municipality a way to **assess one of its own cases and write it up well enough to share**, so good practice can diffuse across public-sector domains. The practitioner runs the whole loop themselves: interview, review the assembled page, publish.
+
 The bot uses [MCP (Model Context Protocol)](https://modelcontextprotocol.io) tool calls to write into a fixed component schema (hero, KPIs, situation/challenge/solution, implementation story, personas, etc.). It doesn't decide *what* a page can look like — the template is fixed in advance — but it decides *when* in the conversation each component is filled in, and lets the conversation flow naturally rather than walking through a rigid form.
 
 ## Status: research prototype
@@ -23,23 +25,20 @@ The end-to-end pipeline works — including with Azure OpenAI as the live conver
 - The full chat ↔ LLM ↔ MCP-tools ↔ live-preview loop runs against Azure OpenAI.
 - A scripted demo mode (see [Demo mode](#demo-mode)) drives the same pipeline without an LLM.
 - All ten page components render, persist to SQLite, and stream incrementally to the browser via WebSocket.
-- Annotations have a data model and a service layer already, but the curation workflow described below is not yet wired up.
+- The practitioner approves or revises each component inline as it appears, then opens a whole-page preview and publishes it themselves. Publishing is reversible — they can return to the conversation and keep editing.
 
 ### Planned work and open questions
 
 These are the rough edges I expect to work on in the coming months. They are not in priority order.
 
-**A curation step between conversation and publication.**
-Today the page produced from the conversation is treated as if it were the final artifact — which is visible in a few places in the code. The next iteration moves to a *draft → curate → publish* flow. While the bot interviews, it also produces **annotations** on the page: flags for where the interviewee could not be precise about a figure, where a piece of reasoning seems thinly argued, or where information that should have been gathered is missing. A human researcher then walks through the annotations one by one — acknowledging, editing, or adding context — and only then publishes the page. The annotations table in the schema is groundwork for this; the LLM-side prompt logic and the curator UI are still to be built.
-
-**A better-looking page template.**
-The current page styling is functional but visually rough. The case study template needs a deliberate design pass — typography, spacing, colour, and the visual rhythm between components.
-
-**Components that gracefully scale to the available material.**
-Several components currently assume a fixed number of items — three KPIs, three personas, and so on. When an interview only yields two of something, the templates should compress without breaking the layout — neither leaving empty placeholder cells nor pressuring the bot to invent a third item. This is a template-rendering problem as much as a prompt-engineering one.
+**Pushing published pages out.**
+Publishing currently just flips a page to `published` and exposes it at a read-only `/case/{id}` URL inside the app. The next step for diffusion is to push that rendered page to an existing web server (over SFTP or similar) so finished cases live alongside UTTC's existing case library rather than only inside PageCraft.
 
 **Docker deployment.**
 A `docker-compose.yml` is in the repo but has not actually been exercised yet. Getting the system to run cleanly in containers — and potentially splitting the orchestrator, the MCP server, and the web UI into separate containers that talk to each other — is on the list.
+
+**A real pilot.**
+The end-to-end loop works, but PageCraft has not yet been run in a live interview with a municipal practitioner. That is the test that matters.
 
 ## How it works
 
@@ -122,14 +121,14 @@ src/pagecraft/
 ├── demo.py             No-LLM scripted fallback
 ├── orchestrator/       Conversation engine, LLM client, MCP bridge, agenda
 ├── mcp_server/         MCP server + per-component tool implementations
-├── routes/             HTTP routes + WebSocket route
-├── services/           Page and annotation persistence
+├── routes/             Interview, preview/publish, and WebSocket routes
+├── services/           Page persistence + component edit form
 ├── templates/          Jinja2 templates (base, fragments, per-component)
 └── static/             htmx, CSS, JS
 
 prompts/
 ├── system.md           Main system prompt (Swedish)
-└── annotation_guidance.md
+└── opening.md          Scripted opening message
 
 doc/
 ├── Master - ...md      The UTTC case template this project implements

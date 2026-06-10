@@ -8,7 +8,6 @@ from pagecraft.mcp_server.renderer import render_component
 @mcp.tool()
 def write_kpis(
     items: list[dict],
-    annotations: list[dict] | None = None,
 ) -> str:
     """Render the KPI section with one or more quantitative indicators.
 
@@ -20,7 +19,6 @@ def write_kpis(
             IMPORTANT: `value` is a short headline figure shown in large type
             (e.g. "35 518 kg CO2e", "~3 milj kr/år", "60 %"). Keep it to a few
             words; put any explanation in `description`, not in `value`.
-        annotations: Optional list of {field, text, severity} annotations
     """
     data = {"items": items}
     html = render_component("components/kpis.html", data)
@@ -28,5 +26,4 @@ def write_kpis(
         "html": html,
         "data_json": data,
         "component_type": "kpis",
-        "annotations": annotations or [],
     })

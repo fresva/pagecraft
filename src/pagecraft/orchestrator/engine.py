@@ -181,8 +181,6 @@ async def handle_user_message(
     agenda.update_from_db(component_statuses)
 
     # Static system prompt (byte-identical between turns → prompt-cacheable).
-    # Annotation guidance is no longer appended here — annotations are generated
-    # as a post-processing pass after the interview, not inline by the bot.
     system_content = prompt_loader.system_prompt()
 
     # Dynamic status: agenda + true current page content, rebuilt from the DB
@@ -298,7 +296,6 @@ async def handle_user_message(
             tool_result_str = json.dumps({
                 "component_type": comp_type,
                 "status": "rendered",
-                "annotations": result.get("annotations", []),
             })
             await _save_message(db, page_id, "tool", tool_result_str, tool_call_id=tc.id)
             messages.append({"role": "tool", "content": tool_result_str, "tool_call_id": tc.id})

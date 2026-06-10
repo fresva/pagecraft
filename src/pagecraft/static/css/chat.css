@@ -201,12 +201,14 @@
 }
 
 .btn-end-interview {
+    display: inline-block;
     padding: 0.5rem 1rem;
     background: transparent;
     color: var(--color-text-muted, #6b7280);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     font-size: 0.85rem;
+    text-decoration: none;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
 }
@@ -214,12 +216,6 @@
 .btn-end-interview:hover {
     background: var(--color-border);
     color: var(--color-text, #111827);
-}
-
-.chat-input-form.chat-closed {
-    justify-content: center;
-    color: var(--color-text-muted, #6b7280);
-    font-size: 0.9rem;
 }
 
 /* === Edit field button + modal === */

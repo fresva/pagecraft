@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from pagecraft.services.page_service import (
     get_page,
     get_page_by_token,
     get_page_components,
+    update_page_status,
 )
 
 router = APIRouter()
@@ -32,6 +33,22 @@ async def preview_page(request: Request, uri_token: str):
             "labels": {c.type: c.label for c in registry},
         },
     )
+
+
+@router.post("/preview/{uri_token}/publish")
+async def publish_page(request: Request, uri_token: str):
+    """Publish the page (make /case/{id} reachable) and return to the preview.
+
+    Publishing is reversible: the practitioner can go back to the interview and
+    keep editing, and the public view always reflects the current content.
+    """
+    db = request.app.state.db
+    page = await get_page_by_token(db, uri_token)
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+
+    await update_page_status(db, page.id, "published")
+    return RedirectResponse(url=f"/preview/{uri_token}", status_code=303)
 
 
 @router.get("/case/{page_id}", response_class=HTMLResponse)

@@ -244,7 +244,7 @@ def test_contact_minimal():
 # --- Cross-cutting ---
 
 def test_all_tools_return_required_fields():
-    """Every tool result must have html, data_json, component_type, annotations."""
+    """Every tool result must have html, data_json, component_type."""
     from pagecraft.mcp_server.tools.hero import write_hero
     from pagecraft.mcp_server.tools.metadata import write_metadata
     from pagecraft.mcp_server.tools.situation import write_situation
@@ -273,4 +273,3 @@ def test_all_tools_return_required_fields():
         assert "html" in result, f"{fn.__name__} missing html"
         assert "data_json" in result, f"{fn.__name__} missing data_json"
         assert "component_type" in result, f"{fn.__name__} missing component_type"
-        assert "annotations" in result, f"{fn.__name__} missing annotations"

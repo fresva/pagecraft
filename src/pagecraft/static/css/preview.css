@@ -354,20 +354,3 @@
     font-size: 0.9rem;
     font-weight: 500;
 }
-
-/* === Annotations (inline highlight, used by the renderer) === */
-.annotated {
-    position: relative;
-    border-bottom: 2px dashed;
-    cursor: help;
-}
-
-.annotation-verify { border-color: var(--color-warning); }
-.annotation-assumption { border-color: var(--color-primary); }
-.annotation-missing { border-color: var(--color-danger); }
-
-.annotation-marker {
-    font-size: 0.7rem;
-    vertical-align: super;
-    margin-left: 0.125rem;
-}

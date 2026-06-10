@@ -27,10 +27,6 @@ class PromptLoader:
         """
         return self._load("system.md")
 
-    def annotation_guidance(self) -> str:
-        """Return annotation instructions."""
-        return self._load("annotation_guidance.md")
-
     def opening_message(self, info_url: str = "") -> str:
         """Return the scripted opening message shown to the interviewee.
 

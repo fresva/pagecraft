@@ -44,18 +44,10 @@ def test_system_prompt_mentions_synthesis_components():
     assert "syntes" in result.lower()
 
 
-def test_annotation_guidance_loads():
-    loader = PromptLoader(PROMPTS_DIR)
-    result = loader.annotation_guidance()
-    assert len(result) > 0
-    assert "annotation" in result.lower() or "verify" in result.lower()
-
-
 def test_loader_with_missing_dir():
     """PromptLoader with nonexistent dir returns empty strings."""
     loader = PromptLoader(Path("/nonexistent/path"))
     assert loader.system_prompt() == ""
-    assert loader.annotation_guidance() == ""
 
 
 def test_no_section_prompt_method():

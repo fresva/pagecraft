@@ -12,7 +12,6 @@ def write_contact(
     organization: str,
     email: str | None = None,
     phone: str | None = None,
-    annotations: list[dict] | None = None,
 ) -> str:
     """Render the contact information section.
 
@@ -22,7 +21,6 @@ def write_contact(
         organization: Organization name
         email: Optional email address
         phone: Optional phone number
-        annotations: Optional list of {field, text, severity} annotations
     """
     data = {
         "name": name,
@@ -36,5 +34,4 @@ def write_contact(
         "html": html,
         "data_json": data,
         "component_type": "contact",
-        "annotations": annotations or [],
     })

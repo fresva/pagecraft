@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 
 
@@ -24,18 +24,3 @@ class Component:
     version: int = 1
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-
-@dataclass
-class Annotation:
-    id: int | None = None
-    component_id: int = 0
-    field: str = ""
-    message: str = ""
-    severity: str = "verify"
-    resolved: bool = False
-    resolved_at: datetime | None = None
-    decision: str = "pending"
-    curator_note: str | None = None
-    resolved_by: str | None = None
-    created_at: datetime | None = None

@@ -16,6 +16,17 @@
 <div class="preview-standalone">
     <header class="preview-standalone-header">
         <span class="preview-badge">PageCraft Preview</span>
+        <div class="preview-actions">
+            <a href="/interview/{{ page.id }}" class="preview-back">&#8592; Tillbaka till intervjun</a>
+            {% if page.status == "published" %}
+            <span class="publish-state is-published">Publicerad</span>
+            <a href="/case/{{ page.id }}" target="_blank" rel="noopener" class="preview-public-link">Visa publik sida &#8599;</a>
+            {% else %}
+            <form method="post" action="/preview/{{ page.uri_token }}/publish" class="publish-form">
+                <button type="submit" class="btn-publish">Publicera</button>
+            </form>
+            {% endif %}
+        </div>
     </header>
     <main class="preview-standalone-content">
         <div id="component-hero" class="component-slot">{{ slot("hero") }}</div>

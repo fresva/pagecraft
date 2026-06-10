@@ -25,20 +25,6 @@ CREATE TABLE IF NOT EXISTS components (
     UNIQUE(page_id, component_type)
 );
 
-CREATE TABLE IF NOT EXISTS annotations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    component_id INTEGER NOT NULL REFERENCES components(id) ON DELETE CASCADE,
-    field TEXT NOT NULL,
-    message TEXT NOT NULL,
-    severity TEXT NOT NULL,
-    resolved INTEGER NOT NULL DEFAULT 0,
-    resolved_at TIMESTAMP,
-    decision TEXT NOT NULL DEFAULT 'pending',
-    curator_note TEXT,
-    resolved_by TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS conversation_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     page_id INTEGER NOT NULL REFERENCES pages(id) ON DELETE CASCADE,
@@ -52,34 +38,26 @@ CREATE TABLE IF NOT EXISTS conversation_messages (
 
 CREATE INDEX IF NOT EXISTS idx_pages_uri_token ON pages(uri_token);
 CREATE INDEX IF NOT EXISTS idx_components_page_id ON components(page_id);
-CREATE INDEX IF NOT EXISTS idx_annotations_component_id ON annotations(component_id);
-CREATE INDEX IF NOT EXISTS idx_annotations_unresolved ON annotations(resolved) WHERE resolved = 0;
 CREATE INDEX IF NOT EXISTS idx_messages_page_id ON conversation_messages(page_id);
 """
 
 
-async def _column_names(db: aiosqlite.Connection, table: str) -> set[str]:
-    cursor = await db.execute(f"PRAGMA table_info({table})")
-    rows = await cursor.fetchall()
-    return {row[1] for row in rows}
-
-
 async def _migrate(db: aiosqlite.Connection) -> None:
-    """Apply idempotent schema migrations for databases created before
-    the curation-workflow columns existed. Safe to run on every startup."""
-    # Page lifecycle: the old single state 'active' becomes 'in_interview'.
-    await db.execute("UPDATE pages SET status = 'in_interview' WHERE status = 'active'")
+    """Idempotent migrations to bring older databases onto the current,
+    two-state lifecycle. Safe to run on every startup.
 
-    # Annotation curation columns (added incrementally on existing tables).
-    ann_cols = await _column_names(db, "annotations")
-    if "decision" not in ann_cols:
-        await db.execute(
-            "ALTER TABLE annotations ADD COLUMN decision TEXT NOT NULL DEFAULT 'pending'"
-        )
-    if "curator_note" not in ann_cols:
-        await db.execute("ALTER TABLE annotations ADD COLUMN curator_note TEXT")
-    if "resolved_by" not in ann_cols:
-        await db.execute("ALTER TABLE annotations ADD COLUMN resolved_by TEXT")
+    The page lifecycle is now just 'in_interview' -> 'published'. The legacy
+    researcher-review states and the annotation/curation workflow have been
+    removed, so we collapse old statuses and drop the annotations table.
+    """
+    await db.execute(
+        "UPDATE pages SET status = 'in_interview' "
+        "WHERE status IN ('active', 'awaiting_review', 'in_review')"
+    )
+    await db.execute(
+        "UPDATE components SET status = 'agreed' WHERE status = 'reviewer_approved'"
+    )
+    await db.execute("DROP TABLE IF EXISTS annotations")
     await db.commit()
 
 

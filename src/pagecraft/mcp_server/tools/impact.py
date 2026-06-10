@@ -8,7 +8,6 @@ from pagecraft.mcp_server.renderer import render_component
 @mcp.tool()
 def write_impact(
     items: list[dict],
-    annotations: list[dict] | None = None,
 ) -> str:
     """Render the impact assessment section with one or more impact dimensions.
 
@@ -21,7 +20,6 @@ def write_impact(
             IMPORTANT: `value` is a short headline figure shown in large type
             (e.g. ">50 %", "290 kommuner", "Hög"). Keep it brief; put any
             explanation in `description`, not in `value`.
-        annotations: Optional list of {field, text, severity} annotations
     """
     data = {"items": items}
     html = render_component("components/impact.html", data)
@@ -29,5 +27,4 @@ def write_impact(
         "html": html,
         "data_json": data,
         "component_type": "impact",
-        "annotations": annotations or [],
     })

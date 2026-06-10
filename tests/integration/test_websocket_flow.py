@@ -188,22 +188,6 @@ def test_websocket_edit_component(client):
     assert "badge-draft" in comp["html"]
 
 
-def test_websocket_end_interview(client):
-    """Ending the interview closes the chat and moves the page to review."""
-    page_id = _create_page_and_get_id(client)
-
-    with client.websocket_connect(f"/ws/{page_id}") as ws:
-        ws.send_text(json.dumps({"type": "end_interview"}))
-        # handler sends: chat (ack) + control (closed form)
-        msgs = _collect_messages(ws, 2)
-
-    types = [m["type"] for m in msgs]
-    assert "chat" in types
-    assert "control" in types
-    closed = next(m for m in msgs if m["type"] == "control")
-    assert "chat-closed" in closed["html"]
-
-
 def test_websocket_multiple_components(client):
     """Sequential messages render different components."""
     page_id = _create_page_and_get_id(client)

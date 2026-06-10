@@ -4,7 +4,7 @@ from datetime import datetime
 
 import aiosqlite
 
-from pagecraft.models.page import Annotation, Component, Page
+from pagecraft.models.page import Component, Page
 
 
 def _generate_uri_token() -> str:

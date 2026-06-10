@@ -1,11 +1,9 @@
-import asyncio
 import html
 import json
 import logging
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from pagecraft.orchestrator.annotator import run_annotation_pass_safe
 from pagecraft.registry import ComponentDef, interview_ordered
 from pagecraft.services.edit_form import apply_edits, build_edit_form_html
 from pagecraft.services.page_service import (
@@ -13,7 +11,6 @@ from pagecraft.services.page_service import (
     get_page_components,
     save_component,
     update_component_status,
-    update_page_status,
 )
 
 logger = logging.getLogger(__name__)
@@ -76,16 +73,6 @@ async def send_component_html(
         f'</div>'
     )
     await ws.send_json({"type": "component", "html": html})
-
-
-async def send_interview_closed(ws: WebSocket) -> None:
-    """Replace the chat input form with a closed-state notice via OOB swap."""
-    closed_html = (
-        '<form id="chat-form" hx-swap-oob="true" class="chat-input-form chat-closed">'
-        '<span class="chat-closed-text">Intervjun är avslutad.</span>'
-        '</form>'
-    )
-    await ws.send_json({"type": "control", "html": closed_html})
 
 
 async def send_typing_indicator(ws: WebSocket, active: bool, text: str = "Boten tänker...") -> None:
@@ -179,21 +166,6 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
 
                 # Clear typing indicator
                 await send_typing_indicator(websocket, False)
-
-            elif msg_type == "end_interview":
-                # Move the page into the review queue, close the chat UI, and kick
-                # off the annotation pass in the background so the interviewee
-                # isn't kept waiting while the LLM annotates each component.
-                await update_page_status(db, page_id, "awaiting_review")
-                await send_chat_html(
-                    websocket, "assistant",
-                    "Tack! Intervjun är avslutad. Sidan lämnas nu vidare för "
-                    "granskning av en forskare innan publicering.",
-                )
-                await send_interview_closed(websocket)
-                asyncio.create_task(
-                    run_annotation_pass_safe(db, page_id, registry, llm_client, prompt_loader)
-                )
 
             elif msg_type == "edit_request":
                 component_id = msg.get("component_id")
