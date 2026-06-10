@@ -7,6 +7,8 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from pagecraft.registry import ComponentDef, interview_ordered
 from pagecraft.services.edit_form import apply_edits, build_edit_form_html
 from pagecraft.services.page_service import (
+    add_conversation_message,
+    format_component_data,
     get_component,
     get_page_components,
     save_component,
@@ -203,9 +205,22 @@ async def websocket_endpoint(websocket: WebSocket, page_id: int):
                     await send_component_html(
                         websocket, component.component_type, result["html"], "draft", saved.id,
                     )
-                    # The bot picks up this edit automatically: the engine rebuilds
-                    # its per-turn status block from the DB, which now reflects the
-                    # new content. No separate edit note needed.
+                    # Persist the edit as a self-contained note in the conversation
+                    # so the bot sees the new content as ground truth on its next
+                    # turn (role 'system' → authoritative, and hidden from the chat
+                    # UI). This is what lets the per-turn status block stay slim:
+                    # the page's content lives in the conversation, not in a full
+                    # state dump re-sent every turn.
+                    try:
+                        new_data = json.loads(result["data_json"])
+                    except (TypeError, json.JSONDecodeError):
+                        new_data = edited
+                    note = (
+                        f"(Deltagaren har just redigerat **{comp_def.label}** direkt "
+                        f"i förhandsvisningen. Uppdaterat innehåll, ersätter tidigare "
+                        f"version:\n{format_component_data(new_data)})"
+                    )
+                    await add_conversation_message(db, page_id, "system", note)
                     comps = await get_page_components(db, page_id)
                     statuses = {c.component_type: c.status for c in comps}
                     await send_agenda_html(websocket, registry, statuses)

@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import sqlite3
 
 import pytest
 from starlette.testclient import TestClient
@@ -186,6 +187,38 @@ def test_websocket_edit_component(client):
     comp = next(m for m in edit_msgs if m["type"] == "component")
     assert "Helt nytt nuläge" in comp["html"]
     assert "badge-draft" in comp["html"]
+
+
+def test_websocket_edit_persists_authoritative_note(client, app):
+    """A manual edit is persisted as a system note carrying the new content, so
+    the bot picks it up as ground truth on its next turn."""
+    page_id = _create_page_and_get_id(client)
+
+    with client.websocket_connect(f"/ws/{page_id}") as ws:
+        ws.send_text(json.dumps({"type": "chat", "text": "Hej"}))
+        messages = _collect_messages(ws, DEMO_MSG_COUNT)
+        comp_msg = next(m for m in messages if m["type"] == "component")
+        component_id = int(re.search(r"requestEdit\((\d+)\)", comp_msg["html"]).group(1))
+
+        ws.send_text(json.dumps({
+            "type": "component_edit",
+            "component_id": component_id,
+            "fields": {"current_situation": "Helt nytt nuläge"},
+        }))
+        _collect_messages(ws, 2)  # component + agenda
+
+    conn = sqlite3.connect(app.state.settings.db_path)
+    notes = [
+        row[0] for row in conn.execute(
+            "SELECT content FROM conversation_messages "
+            "WHERE page_id = ? AND role = 'system'",
+            (page_id,),
+        ).fetchall()
+    ]
+    conn.close()
+
+    assert any("Helt nytt nuläge" in n for n in notes)
+    assert any("redigerat" in n for n in notes)
 
 
 def test_websocket_multiple_components(client):

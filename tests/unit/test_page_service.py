@@ -5,12 +5,42 @@ import pytest
 
 from pagecraft.services.page_service import (
     create_page,
+    format_component_data,
     get_page,
     get_page_by_token,
     get_page_components,
     save_component,
     update_component_status,
 )
+
+
+# --- format_component_data (used by the status context and edit notes) ---
+
+def test_format_flat_strings():
+    out = format_component_data({"title": "Hej", "description": "Kort text"})
+    assert "- title: Hej" in out
+    assert "- description: Kort text" in out
+
+
+def test_format_skips_empty_strings():
+    out = format_component_data({"title": "Hej", "description": ""})
+    assert "title" in out
+    assert "description" not in out
+
+
+def test_format_list_of_dicts():
+    out = format_component_data({"items": [
+        {"label": "CO2", "value": "50%", "description": "Minskning"},
+        {"label": "ROI", "value": "2x", "description": ""},
+    ]})
+    assert "[1] label: CO2; value: 50%; description: Minskning" in out
+    assert "[2] label: ROI; value: 2x" in out
+
+
+def test_format_list_of_strings():
+    out = format_component_data({"themes": ["Energi", "Mobilitet"]})
+    assert "themes[1]: Energi" in out
+    assert "themes[2]: Mobilitet" in out
 
 
 @pytest.mark.asyncio

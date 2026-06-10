@@ -11,6 +11,32 @@ def _generate_uri_token() -> str:
     return secrets.token_urlsafe(6)  # ~8 chars
 
 
+def format_component_data(data: dict) -> str:
+    """Render a component's data_json as compact, readable lines for the LLM.
+
+    Used to describe a component's current content in the conversation — both
+    the per-turn status context and the note emitted when a participant edits a
+    component directly in the preview.
+    """
+    lines: list[str] = []
+    for key, value in data.items():
+        if isinstance(value, str):
+            if value.strip():
+                lines.append(f"- {key}: {value}")
+        elif isinstance(value, list):
+            for i, item in enumerate(value, start=1):
+                if isinstance(item, dict):
+                    parts = "; ".join(
+                        f"{k}: {v}" for k, v in item.items()
+                        if isinstance(v, str) and v.strip()
+                    )
+                    if parts:
+                        lines.append(f"- [{i}] {parts}")
+                elif isinstance(item, str) and item.strip():
+                    lines.append(f"- {key}[{i}]: {item}")
+    return "\n".join(lines)
+
+
 async def create_page(db: aiosqlite.Connection, title: str | None = None) -> Page:
     uri_token = _generate_uri_token()
     cursor = await db.execute(

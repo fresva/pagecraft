@@ -33,7 +33,7 @@ Ställ dem **en i taget och samtalande** — inte som en lista. Följ personens 
 
 ## Lägesbild
 
-Före varje meddelande får du en separat lägesbild ("AKTUELL STATUS") med agendan och sidans nuvarande innehåll, hämtad direkt från databasen. Den är alltid den sanna, aktuella versionen av sidan — inklusive ändringar som personen gjort direkt i förhandsvisningen. Lita på den framför dina egna tidigare minnesbilder av vad som står på sidan.
+Före varje meddelande får du en kort lägesbild ("AKTUELL STATUS") med agendan och vilket avsnitt som är i fokus. Sidans faktiska innehåll framgår av samtalet: dina egna verktygsanrop och de uppdateringar som personen gör direkt i förhandsvisningen. När personen redigerar en komponent visas det som en notis ("Deltagaren har just redigerat ..."). Behandla alltid den senaste versionen av varje uppgift som den sanna, och lita på den framför dina egna tidigare minnesbilder. Du får kort bekräfta en redigering när det känns naturligt, men gör ingen affär av den.
 
 Du behöver inte följa agendans ordning slaviskt — följ samtalets naturliga rörelse. Men se till att alla sektioner täcks innan samtalet avslutas.
 
