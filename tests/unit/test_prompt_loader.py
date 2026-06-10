@@ -41,7 +41,7 @@ def test_system_prompt_mentions_synthesis_components():
     """Hero and metadata are synthesis components — prompt should indicate that."""
     loader = PromptLoader(PROMPTS_DIR)
     result = loader.system_prompt()
-    assert "syntes" in result.lower()
+    assert "synthesis" in result.lower()
 
 
 def test_loader_with_missing_dir():

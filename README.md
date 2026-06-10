@@ -151,7 +151,16 @@ uv run pytest tests/e2e        # full interview simulation
 
 ## A note on language
 
-The code, documentation, and this README are in English. The **conversation itself** (system prompt, demo data, component labels) is in Swedish — that's the target audience. Forking PageCraft for another language would mean translating `prompts/system.md`, the labels in `components.yaml`, and the demo sequence in `demo.py`. The page templates use neutral structure and would not need translation.
+There are two languages in play, and it helps to keep them apart.
+
+- **Instruction language** — what the developer reads and edits. The code, documentation, and the system prompt (`prompts/system.md`) are in **English**, so a non-Swedish-speaking developer can tune the bot's behaviour. The prompt instructs the model, in English, to produce Swedish.
+- **Content language** — what the end user sees. The bot's **output** (the page components), the UI chrome (templates, button labels, the agenda, status text in `routes/websocket.py` and `engine.py`), `prompts/opening.md`, the component labels in `components.yaml`, and the demo sequence in `demo.py` are all in **Swedish**, because the audience is Swedish municipalities and the published case feeds UTTC's Swedish case library.
+
+So the system prompt being English does not make the bot reply in English. The Swedish-output directive lives in the prompt's `## Language` section. To experiment with another conversation or output language during development, that section is the single lever to change.
+
+### If we ever support multiple languages in the UI
+
+Letting the *user* pick a language is a much larger job than translating the prompt, and it is **not** built. It would mean a full i18n pass: extracting every hardcoded Swedish UI string (today they're scattered through Jinja templates and inline f-strings in `websocket.py`, `engine.py`, and `edit_form.py`) into a message catalog keyed by locale; threading the chosen locale through the HTTP and WebSocket render paths, which currently have no concept of it; storing the locale per page (a schema change) so the UI, the bot's output, and the published page stay consistent; and reconciling the catalog (static chrome) with the prompt directive (generated content), which is the part ordinary i18n doesn't cover. It also raises a product question: should a published case ever be non-Swedish, given the Swedish-diffusion goal? Defer until there's a concrete need.
 
 ## License
 
