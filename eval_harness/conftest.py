@@ -1,6 +1,6 @@
 """Pytest configuration for the eval harness.
 
-Session-scoped fixtures create the output directory, run-ID, and CSV writer.
+Session-scoped fixtures create the output directory, run-ID, and report writer.
 """
 from __future__ import annotations
 
@@ -8,8 +8,12 @@ import uuid
 from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
 
-from eval_harness.output import CSVWriter
+from eval_harness.output import TxtReportWriter
+
+# Load the harness's own .env (e.g. ANTHROPIC_API_KEY) before any test runs.
+load_dotenv(Path(__file__).parent / ".env")
 
 _OUTPUT_DIR = Path(__file__).parent.parent / "eval_results"
 
@@ -35,8 +39,8 @@ def eval_output_dir() -> Path:
 
 
 @pytest.fixture(scope="session")
-def csv_writer(eval_run_id: str, eval_output_dir: Path):
-    """Open a session-scoped CSVWriter and close it after all tests finish."""
-    writer = CSVWriter(eval_output_dir / "eval_results.csv", eval_run_id)
+def report_writer(eval_run_id: str, eval_output_dir: Path):
+    """Open a session-scoped TxtReportWriter and close it after all tests finish."""
+    writer = TxtReportWriter(eval_output_dir / "eval_results.txt", eval_run_id)
     yield writer
     writer.close()

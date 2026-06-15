@@ -3,7 +3,7 @@
 Run with:  uv run pytest eval_harness/ -v --tb=short
 
 Each test drives one persona through a complete PageCraft session, scores the result
-with the LLM judge (requires ANTHROPIC_API_KEY), and appends a row to eval_results.csv.
+with the LLM judge (requires ANTHROPIC_API_KEY), and appends an entry to eval_results.txt.
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ import pytest
 
 from eval_harness.driver import ConversationDriver
 from eval_harness.judge.llm import LLMJudge
-from eval_harness.output import CSVWriter
+from eval_harness.output import TxtReportWriter
 from eval_harness.personas import PERSONAS, PersonaDef
 
 
@@ -21,7 +21,7 @@ from eval_harness.personas import PERSONAS, PersonaDef
 def test_persona_interview(
     persona: PersonaDef,
     tmp_path: Path,
-    csv_writer: CSVWriter,
+    report_writer: TxtReportWriter,
 ) -> None:
     """Drive a full interview session for one persona and record scores."""
     driver = ConversationDriver(persona, tmp_path / "eval.db")
@@ -31,7 +31,7 @@ def test_persona_interview(
     verdict = judge.score(log)
 
     eval_id = str(uuid.uuid4())
-    csv_writer.write_row(log, verdict, eval_id)
+    report_writer.write_row(log, verdict, eval_id)
 
     assert log.termination_reason != "error", (
         f"Persona '{persona.id}' session raised an exception: {log.error_detail}"

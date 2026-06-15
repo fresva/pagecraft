@@ -47,6 +47,11 @@ class JudgeVerdict:
     overall_score: float
     judge_reasoning: str
     judge_type: str = "llm"
+    # Grounding for the reasoning: the exact turn the judge cited. All three are
+    # None when the judge gave no citation or it failed to resolve against the log.
+    citation_turn: Optional[int] = None
+    citation_direction: Optional[str] = None
+    citation_quote: Optional[str] = None
 
 
 @dataclass

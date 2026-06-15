@@ -34,14 +34,47 @@ class LLMJudge:
             message = stream.get_final_message()
 
         result = self._parse_result(message.content[0].text.strip())
+        turn, direction, quote = self._resolve_citation(log, result)
         return JudgeVerdict(
             overall_score=round(float(result["score"]), 2),
             judge_reasoning=result.get("reasoning", ""),
+            citation_turn=turn,
+            citation_direction=direction,
+            citation_quote=quote,
         )
 
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _resolve_citation(
+        log: ConversationLog, result: dict
+    ) -> tuple[int | None, str | None, str | None]:
+        """Validate the judge's cited turn against the real log.
+
+        The judge only sees text-bearing turns (see ``_build_payload``), so a
+        citation may not line up with ``log.turns``. Returns the verified
+        (turn, direction, quote) if the cited turn exists and the quote is a
+        verbatim substring of its text; otherwise (None, None, None).
+        """
+        raw_turn = result.get("turn_ref")
+        direction = result.get("direction")
+        quote = result.get("quote")
+        if raw_turn is None or not quote:
+            return (None, None, None)
+        try:
+            turn_no = int(raw_turn)
+        except (TypeError, ValueError):
+            return (None, None, None)
+        for turn in log.turns:
+            if turn.turn != turn_no or not turn.text:
+                continue
+            if direction and turn.direction != direction:
+                continue
+            if quote in turn.text:
+                return (turn.turn, turn.direction, quote)
+        return (None, None, None)
 
     def _build_payload(self, log: ConversationLog) -> str:
         """Serialise log + system prompt as JSON for the judge."""

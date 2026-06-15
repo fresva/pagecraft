@@ -18,5 +18,12 @@ Score the session on a 1–5 scale (decimals allowed):
   2: Poor — significant failures in achieving the system prompt goals
   1: Failed — the session did not accomplish what the system prompt describes
 
+Ground your reasoning in one exact turn from the transcript. Pick the single turn
+in "session.turns" that best supports your judgement and cite it:
+- "turn_ref": that turn's "turn" number (integer)
+- "direction": that turn's "direction" ("sent" or "received")
+- "quote": an exact, verbatim substring copied from that turn's "text" — do not
+  paraphrase, translate, summarize, or shorten with ellipses
+
 Return ONLY a JSON object — no markdown fences, no commentary before or after:
-{"score": <float 1-5>, "reasoning": "<one paragraph>"}
+{"score": <float 1-5>, "reasoning": "<one paragraph>", "turn_ref": <integer>, "direction": "<sent|received>", "quote": "<verbatim substring of that turn's text>"}

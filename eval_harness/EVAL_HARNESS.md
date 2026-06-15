@@ -205,41 +205,49 @@ request timeouts.
 
 ## Layer 5 — Output
 
-### `eval_results/eval_results.csv`
+### `eval_results/eval_results.txt`
 
-One row per persona per run. Columns:
+`TxtReportWriter` (`output.py`) writes one human-readable entry per persona per
+run to a single plain-text report. The file opens with a banner carrying the
+shared run ID, then appends one entry as each persona finishes.
 
-| Column | Description |
+Each entry has four parts:
+
+| Part | Contents |
 |---|---|
-| `eval_id` | UUID for this run |
-| `eval_run_id` | UUID shared across all personas in one pytest session |
-| `persona_id` | e.g. `happy_path` |
-| `scenario_id` | e.g. `default` |
-| `termination_reason` | `completed` / `max_turns` / `input_exhausted` / `error` |
-| `turn_count` | Number of chat turns |
-| `agreed_count` | Components with `agreed` status |
-| `c1_completeness` … `c4_graceful_recovery` | Per-criterion scores |
-| `overall_score` | Weighted average |
-| `judge_type` | `heuristic` or `llm` |
-| `judge_reasoning` | Free-text from LLM judge (empty for heuristic) |
-| `demo_mode` | `True` when Azure credentials were absent |
-| `in_human_review` | `True` if sampled for human review (back-filled) |
+| **Summary** | Persona, eval ID, UTC timestamp, and a one-line session stat (turns, components agreed, completion %, termination reason). |
+| **Rating** | The judge's `overall_score` out of 5 and the judge type. |
+| **Justification** | The judge's free-text reasoning, word-wrapped. |
+| **Conversation reference** | The single grounded citation (turn, direction, verbatim quote) the judge cited, or `[citation unavailable]`. |
+| **Transcript** | The full raw persona ↔ bot exchange (see below). |
 
-### `eval_results/human_review_sample.jsonl`
+### Transcript rendering
 
-A weighted sample of runs selected for human review. Each line is a JSON
-object containing the full transcript, component data, and scores.
+The transcript replays `ConversationLog.turns` in order as a readable dialogue:
 
-**Sampling tiers:**
+- **`PERSONA >`** blocks — the synthetic interviewee's chat messages.
+- **`BOT     >`** blocks — the bot's chat replies, with HTML stripped to plain text.
+- **`- component <type> -> <status>`** markers — inline events each time a
+  component is rendered or its status changes (`draft` / `agreed`).
 
-| Weight | Condition |
-|---|---|
-| 3× | Not completed, overall < 2.5, or C4 < 3 |
-| 2× | 2.5 ≤ overall < 3.5 |
-| 1× | Everything else |
+Every line is tagged with its turn number and word-wrapped to the report width.
+WebSocket bookkeeping frames (typing indicators, agenda refreshes) are omitted
+so the transcript shows only the meaningful exchange.
 
-At least one run per persona is guaranteed in the sample. Target sample size
-is `max(10, ceil(0.20 × total_runs))`.
+Example:
+
+```
+Transcript:
+  [turn  1] PERSONA >
+    Hej! Jag heter Anna och jobbar med Klimatkalkylen, ett verktyg som hjälper
+    kommuner att beräkna sina utsläpp.
+  [turn  1] BOT     >
+    Vad roligt! Berätta mer.
+  [turn  1]   - component hero -> draft
+  [turn  1]   - component hero -> agreed
+  [turn  2] PERSONA >
+    Det stämmer.
+```
 
 ---
 
