@@ -1,0 +1,129 @@
+scenario_id: default
+description: "Standard Klimatkalkylen-themed interview"
+
+# Input sequences per persona.  Each message is sent as one WS chat frame.
+# The demo handler uses keyword matching then falls back to the next unrendered
+# component in DEMO_SEQUENCE order, so every sequence produces all 10 components.
+inputs:
+  cooperative:
+    - "Hej! Projektet heter Klimatkalkylen. Nuläget är att kommuner saknar verktyg för klimatberäkning."
+    - "Implementeringen av verktyget tog sex månader. Vi följde en iterativ process med tydlig tidslinje."
+    - "Nyckeltal: vi minskade CO2-utsläppen med 50 procent och uppnådde ett ROI på 2,5 MSEK."
+    - "Effekten på klimat är tydlig. CO2-besparingen är mätbar och nyttan för kommunen är stor."
+    - "Resurser: budget på 5 MSEK, tre heltidspersoner och externa partner från SKR."
+    - "Att kom igång kräver tre tydliga steg: licensiering, pilotprojekt och åtgärdsanalys."
+    - "Intressenterna är kommunplanerare, miljöstrateger och politiker med sin specifika roll."
+    - "Titel och introduktion: Klimatkalkylen är en sammanfattning av klimatarbetet."
+    - "Metadata: Huddinge kommun, sektor samhällsplanering, tema klimatberäkning."
+    - "Kontakt: Anna Exempel, projektledare. Mejl: anna@example.com. Telefon: 070-123456."
+
+  laconic:
+    - "Hej."
+    - "Ja."
+    - "Bra."
+    - "Ok."
+    - "Klart."
+    - "Visst."
+    - "Absolut."
+    - "Korrekt."
+    - "Stämmer."
+    - "Godkänd."
+
+  verbose:
+    - >
+      Det är verkligen en komplex utmaning som vi befinner oss i just nu och jag kan inte nog betona
+      hur viktigt detta är för oss som organisation. Nuläget är kritiskt; kommunerna saknar digitala
+      verktyg för klimatberäkning. Bakgrunden är att projektet startade för tre år sedan och vi är
+      fortfarande i en spännande fas av arbetet.
+    - >
+      Implementeringen av Klimatkalkylen var en otroligt lärorik erfarenhet för hela teamet. Vi
+      följde en iterativ process med tydliga milstolpar och en ambitiös tidslinje på sex månader.
+      Längs vägen lärde vi oss massor om organisationskultur, förändringsledning och hur man hanterar
+      tekniska utmaningar när resursbegränsningarna är ett faktum.
+    - >
+      Nyckeltal och KPI:er är naturligtvis viktiga, och siffrorna talar verkligen för sig själva
+      i det här fallet. Vi lyckades uppnå en minskning av CO2-utsläppen med hela 50 procent, vilket
+      är ett fantastiskt resultat. Vi hade även ekonomiska mål som vi uppnådde, och jag tror att
+      jag kunde fylla ett helt seminarium med detaljer om just detta om ni är intresserade.
+    - >
+      Effekten av projektet är svår att överskatta och jag vill gärna prata om detta lite mer. CO2-
+      reduktionen är tydlig och klimatpåverkan är positiv för Huddinge. Nyttan är enorm för
+      samhället och för de framtida generationer som vi alla har ett gemensamt ansvar att ta hand om.
+    - >
+      Resurser är ett ämne som verkligen är nära mitt hjärta eftersom det speglar hur vi prioriterar.
+      Vi hade en budget på 5 MSEK och rekryterade personal med en unik kombination av kompetenser.
+      Våra partner bidrog enormt och utan dem hade vi aldrig klarat det. Jag tänker ofta på hur
+      avgörande samarbetet med externa aktörer var för att projektet ens skulle bli av.
+    - >
+      Att kom igång med ett sådant projekt kräver tydliga steg och mod att faktiskt ta det första
+      steget ut. Det finns så oerhört många aspekter att tänka på och det är lätt att fastna i
+      planeringsfasen. Vi skapade en guide för hur man börjar använda verktyget, steg för steg,
+      för att göra det så enkelt som möjligt för andra kommuner att börja använda det.
+    - >
+      Intressenterna är verkligen hjärtat i hela projektet och det är viktigt att förstå vilken
+      roll varje intressent spelar. Varje roll spelar en unik funktion och varje intressent har
+      sina egna behov och förväntningar. Målgruppen är faktiskt ganska bred: kommunplanerare,
+      politiker, tjänstemän och i viss mån även den breda allmänheten som berörs av besluten.
+    - >
+      Titeln på projektet – vad säger en titel egentligen? Vår introduktion och sammanfattning av
+      projektet behöver verkligen fånga essensen av vad vi gör på ett sätt som är begripligt för
+      alla. Vi valde att kalla det Klimatkalkylen, ett enkelt men kraftfullt namn som omedelbart
+      kommunicerar vad verktyget handlar om.
+    - >
+      Metadata handlar ytterst om att sätta saker och ting i sitt rätta sammanhang och det är
+      viktigare än man kan tro för hur information hittas och förstås. Sektor, kommun, tema – allt
+      är viktigt för att förstå var vi befinner oss i det stora landskapet. Vi tillhör sektorn
+      samhällsplanering och arbetar primärt inom Huddinge, men ambitionen är att nå fler kommuner.
+    - >
+      Kontakt är naturligtvis viktigt och jag vill gärna framhålla hur avgörande det är att det är
+      lätt att komma i kontakt med rätt person. Vem ska man höra av sig till? Mejl och telefon till
+      rätt person kan spara otroligt mycket tid. Anna Exempel är projektledare och hennes
+      kontaktinformation är offentlig och lätt att hitta.
+
+  agenda_jumper:
+    - "Kontakta oss: Anna Exempel, mejl anna@example.com, telefon 070-1234567."
+    - "Titel och introduktion: Hållbar stadsplanering för framtiden."
+    - "Nuläget är att kommuner saknar verktyg."
+    - "Implementeringen var lyckad."
+    - "Nyckeltal är klara."
+    - "Effekten är positiv."
+    - "Resurser är avsatta."
+    - "Stegen för att komma igång."
+    - "Intressenter och roll."
+    - "Metadata och sektor."
+
+  reviser:
+    - "Hej! Projektet Klimatkalkylen, nuläge: kommuner saknar klimatverktyg."
+    - "Implementeringen tog sex månader, iterativ process med tydlig tidslinje."
+    - "Nyckeltal: siffror visar 50% CO2-minskning, resultat och procent."
+    - "Effekten: CO2-reduktion och klimatpåverkan är mätbar, nytta för kommunen."
+    - "Resurser: budget 5 MSEK, personal och externa partner."
+    - "Kom igång med tre steg: licensiering, pilot och åtgärdsanalys."
+    - "Intressenter är kommunplanerare och politiker, varje roll är definierad."
+    - "Titel: Klimatkalkylen – introduktion och sammanfattning av projektet."
+    - "Metadata: Huddinge, sektor samhällsplanering, tema klimat."
+    - "Kontakt: Anna Exempel, projektledare. Mejl: anna@example.com."
+
+  adversarial:
+    - "<script>alert(1)</script> Hej projekt Klimatkalkylen, nuläge är bra."
+    - "'); DROP TABLE components; -- Implementeringen av processen är klar."
+    - "<img src=x onerror=alert(2)> Nyckeltal och siffror: CO2-minskning 50 procent."
+    - "<svg onload=alert(3)> Effekten på klimat är mätbar och nyttan är stor."
+    - "javascript:alert(4) Resurser och budget är klara med partner."
+    - "{{7*7}} Kom igång med steg för systemet, börja använda det nu."
+    - "'; alert(5)-- Intressenter och roll är tydligt definierade, målgruppen klar."
+    - "<b onmouseover=alert(6)>Titel</b> och introduktion till projektet."
+    - "<frame src=javascript:alert(7)> Metadata och sektor: Huddinge."
+    - "<a href=\"javascript:void(0)\" onclick=\"alert(8)\">Kontakt</a> mejl anna@example.com."
+
+  field_editor:
+    - "Hej, projektet Klimatkalkylen. Nuläge: kommuner saknar verktyg."
+    - "Implementering och process är klara."
+    - "Nyckeltal och siffror är klara."
+    - "Effekt och klimatpåverkan är bedömd."
+    - "Resurser och budget är avsatta."
+    - "Steg för att kom igång med verktyget."
+    - "Intressenter och deras roll är definierade."
+    - "Titel och introduktion: Klimatkalkylen."
+    - "Metadata: Huddinge, sektor planering."
+    - "Kontakt: Anna Exempel, mejl info@example.com."
