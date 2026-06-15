@@ -32,26 +32,21 @@ class ConversationLog:
     """Complete record of a single synthetic interview session."""
 
     persona_id: str
-    scenario_id: str
     turns: list[TurnRecord] = field(default_factory=list)
     components: dict[str, ComponentState] = field(default_factory=dict)
     render_order: list[str] = field(default_factory=list)
     turn_count: int = 0
-    termination_reason: str = "error"  # completed|max_turns|input_exhausted|error
+    termination_reason: str = "error"  # completed|max_turns|error
     error_detail: str = ""
 
 
 @dataclass
 class JudgeVerdict:
-    """Scores produced by a judge for one interview session."""
+    """Score produced by the LLM judge for one interview session."""
 
-    c1_completeness: Optional[float]
-    c2_data_fidelity: Optional[float]
-    c3_agenda_progression: Optional[float]
-    c4_graceful_recovery: Optional[float]  # None for heuristic judge
     overall_score: float
-    judge_type: str  # "heuristic" | "llm"
     judge_reasoning: str
+    judge_type: str = "llm"
 
 
 @dataclass

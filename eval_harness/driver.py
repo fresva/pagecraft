@@ -11,27 +11,13 @@ from pathlib import Path
 from typing import Optional
 
 import aiosqlite
+import anthropic
 from starlette.testclient import TestClient
 
 from eval_harness.models import ComponentState, ConversationLog, TurnRecord
-from eval_harness.personas import PersonaDef, PostComponentBehavior
+from eval_harness.personas import PersonaDef
 
 logger = logging.getLogger(__name__)
-
-# Per-component field overrides sent by the field_editor persona.
-# Empty dict means re-render with unchanged data (exercises the component_edit path).
-_FIELD_EDITS: dict[str, dict] = {
-    "hero": {"title": "Uppdaterad titel via direktredigering"},
-    "situation": {"current_situation": "Uppdaterat nuläge via direktredigering"},
-    "kpis": {},
-    "impact": {},
-    "implementation": {"heading": "Reviderad implementeringsrubrik"},
-    "resources": {"heading": "Uppdaterade resurser via direktredigering"},
-    "getting_started": {},
-    "personas": {},
-    "metadata": {"municipality": "Uppsala kommun (redigerad)"},
-    "contact": {"name": "Redigerad Kontaktperson"},
-}
 
 _MAX_FRAMES_PER_TURN = 60
 _MAX_ACTION_FRAMES = 5
@@ -47,13 +33,11 @@ class ConversationDriver:
         """Initialise the driver with a persona definition and an isolated DB path."""
         self._persona = persona
         self._db_path = db_path
+        self._anthropic = anthropic.Anthropic()
 
     def run(self) -> ConversationLog:
         """Execute the full session and return a populated ConversationLog."""
-        log = ConversationLog(
-            persona_id=self._persona.id,
-            scenario_id=self._persona.scenario_id,
-        )
+        log = ConversationLog(persona_id=self._persona.id)
         page_id: Optional[int] = None
 
         os.environ["PAGECRAFT_DB_PATH"] = str(self._db_path)
@@ -85,9 +69,11 @@ class ConversationDriver:
     # ------------------------------------------------------------------
 
     def _drive_session(self, ws, log: ConversationLog) -> None:
-        """Main loop: send inputs and react to components until termination."""
-        input_idx = 0
+        """Main loop: generate LLM persona responses and react to components until termination."""
         turn = 0
+        history: list[dict] = [
+            {"role": "user", "content": "Begin: introduce yourself and your project briefly."}
+        ]
 
         while True:
             agreed_count = sum(1 for c in log.components.values() if c.status == "agreed")
@@ -97,12 +83,8 @@ class ConversationDriver:
             if turn >= self._persona.max_turns:
                 log.termination_reason = "max_turns"
                 break
-            if input_idx >= len(self._persona.inputs):
-                log.termination_reason = "input_exhausted"
-                break
 
-            text = self._persona.inputs[input_idx]
-            input_idx += 1
+            text = self._generate_persona_response(history)
             turn += 1
 
             ws.send_text(json.dumps({"type": "chat", "text": text}))
@@ -128,63 +110,38 @@ class ConversationDriver:
                             new_drafts.append((comp_type, comp_id))
 
             for comp_type, comp_id in new_drafts:
-                self._apply_post_behavior(ws, log, turn, comp_type, comp_id)
+                self._send_action(ws, comp_id, "agree")
+                action_frames = self._drain_action_frames(ws, log, turn)
+                self._sync_component_states(action_frames, log)
+
+            bot_text = self._extract_bot_text(frames)
+            history.append({"role": "assistant", "content": text})
+            if bot_text:
+                history.append({"role": "user", "content": bot_text})
 
         log.turn_count = turn
 
-    # ------------------------------------------------------------------
-    # Post-component behaviors
-    # ------------------------------------------------------------------
+    def _generate_persona_response(self, history: list[dict]) -> str:
+        """Call Anthropic Haiku to generate the next persona response."""
+        response = self._anthropic.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=self._persona.system_prompt,
+            messages=history,
+        )
+        return response.content[0].text.strip()
 
-    def _apply_post_behavior(
-        self,
-        ws,
-        log: ConversationLog,
-        turn: int,
-        comp_type: str,
-        comp_id: int,
-    ) -> None:
-        """Dispatch the persona's post-component action for a newly drafted component."""
-        behavior = self._persona.post_component_behavior
-
-        if behavior == PostComponentBehavior.AUTO_AGREE:
-            self._send_action(ws, comp_id, "agree")
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
-
-        elif behavior == PostComponentBehavior.REVISE_CYCLE:
-            self._send_action(ws, comp_id, "agree")
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
-
-            self._send_action(ws, comp_id, "revise")
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
-
-            self._send_action(ws, comp_id, "agree")
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
-
-        elif behavior == PostComponentBehavior.FIELD_EDIT:
-            fields = _FIELD_EDITS.get(comp_type, {})
-            ws.send_text(
-                json.dumps(
-                    {"type": "component_edit", "component_id": comp_id, "fields": fields}
-                )
-            )
-            log.turns.append(
-                TurnRecord(
-                    turn=turn,
-                    direction="sent",
-                    text=f"component_edit:{comp_type}:{json.dumps(fields)}",
-                )
-            )
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
-
-            self._send_action(ws, comp_id, "agree")
-            frames = self._drain_action_frames(ws, log, turn)
-            self._sync_component_states(frames, log)
+    @staticmethod
+    def _extract_bot_text(frames: list[dict]) -> str:
+        """Extract plain text from bot chat frames by stripping HTML tags."""
+        parts = []
+        for frame in frames:
+            if frame.get("type") == "chat":
+                raw = re.sub(r"<[^>]+>", " ", frame.get("html", ""))
+                text = re.sub(r"\s+", " ", raw).strip()
+                if text:
+                    parts.append(text)
+        return " ".join(parts)
 
     def _send_action(self, ws, comp_id: int, action: str) -> None:
         """Send a component_action WebSocket message."""

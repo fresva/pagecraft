@@ -11,22 +11,15 @@ CSV_COLUMNS: list[str] = [
     "run_id",
     "eval_id",
     "timestamp",
-    "demo_mode",
     "persona_id",
-    "scenario_id",
     "turn_count",
     "components_rendered",
     "components_agreed",
     "completion_rate",
     "termination_reason",
-    "score_c1_completeness",
-    "score_c2_data_fidelity",
-    "score_c3_agenda_progression",
-    "score_c4_graceful_recovery",
     "overall_score",
     "judge_type",
     "judge_reasoning",
-    "in_human_review",
     "error_detail",
 ]
 
@@ -47,10 +40,9 @@ class CSVWriter:
         log: ConversationLog,
         verdict: JudgeVerdict,
         eval_id: str,
-        demo_mode: bool = True,
     ) -> None:
         """Append one result row and flush immediately."""
-        self._writer.writerow(self._build_row(log, verdict, eval_id, demo_mode))
+        self._writer.writerow(self._build_row(log, verdict, eval_id))
         self._file.flush()
 
     def close(self) -> None:
@@ -67,7 +59,6 @@ class CSVWriter:
         log: ConversationLog,
         verdict: JudgeVerdict,
         eval_id: str,
-        demo_mode: bool,
     ) -> dict:
         """Assemble the CSV row dict from a log and verdict."""
         agreed_count = sum(1 for c in log.components.values() if c.status == "agreed")
@@ -75,21 +66,14 @@ class CSVWriter:
             "run_id": self._run_id,
             "eval_id": eval_id,
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "demo_mode": demo_mode,
             "persona_id": log.persona_id,
-            "scenario_id": log.scenario_id,
             "turn_count": log.turn_count,
             "components_rendered": len(log.components),
             "components_agreed": agreed_count,
             "completion_rate": agreed_count / 10,
             "termination_reason": log.termination_reason,
-            "score_c1_completeness": verdict.c1_completeness,
-            "score_c2_data_fidelity": verdict.c2_data_fidelity,
-            "score_c3_agenda_progression": verdict.c3_agenda_progression,
-            "score_c4_graceful_recovery": verdict.c4_graceful_recovery,
             "overall_score": verdict.overall_score,
             "judge_type": verdict.judge_type,
             "judge_reasoning": verdict.judge_reasoning,
-            "in_human_review": False,
             "error_detail": log.error_detail,
         }
