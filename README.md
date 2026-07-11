@@ -46,10 +46,10 @@ The end-to-end loop works, but PageCraft has not yet been run in a live intervie
 ┌────────────┐     WebSocket      ┌──────────────┐
 │  Browser   │ ◄────────────────► │  FastAPI app │
 │  (htmx)    │   (live page +     │              │
-└────────────┘    chat updates)   │  ┌─────────┐ │     ┌──────────┐
-                                  │  │Orchestr.│ │ ◄──►│  Azure   │
-                                  │  └────┬────┘ │     │  OpenAI  │
-                                  │       │ MCP  │     └──────────┘
+└────────────┘    chat updates)   │  ┌─────────┐ │     ┌──────────────┐
+                                  │  │Orchestr.│ │ ◄──►│              │
+                                  │  └────┬────┘ │     │ Azure OpenAI │
+                                  │       │ MCP  │     └──────────────┘
                                   │  ┌────▼────┐ │
                                   │  │   MCP   │ │
                                   │  │  server │ │     ┌──────────┐
@@ -92,7 +92,7 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 # 1. Install deps
 uv sync
 
-# 2. Copy env example and fill in Azure OpenAI credentials
+# 2. Copy env example and fill in your Azure OpenAI credentials
 cp .env.example .env
 $EDITOR .env
 

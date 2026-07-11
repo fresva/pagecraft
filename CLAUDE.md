@@ -27,7 +27,7 @@ uv run ruff check src tests
 uv run ruff format src tests
 ```
 
-Tests run in demo mode by default — `conftest.py` clears Azure env vars, so no credentials are needed.
+Tests run in demo mode by default — `conftest.py` clears the Azure env vars, so no credentials are needed.
 
 Copy `.env.example` to `.env` and fill in `AZURE_OPENAI_*` vars to use the real LLM. Without credentials the app falls back to the scripted demo handler in `demo.py`.
 
