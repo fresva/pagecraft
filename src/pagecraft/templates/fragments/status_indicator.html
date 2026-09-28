@@ -1,0 +1,6 @@
+<div id="typing-indicator" class="typing-indicator {{ 'active' if active else '' }}">
+    {% if active %}
+    <span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+    <span class="typing-text">{{ text | default("Boten tänker...") }}</span>
+    {% endif %}
+</div>

@@ -1,0 +1,12 @@
+<section class="component component-getting-started">
+    <h2>Kom igång</h2>
+    <div class="steps-grid">
+        {% for step in steps | default([]) %}
+        <div class="step-card">
+            <div class="step-number">{{ loop.index }}</div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>

@@ -1,0 +1,47 @@
+sequenceDiagram
+    actor U as User
+    participant WS as WebSocket route
+    participant E as Engine
+    participant DB as SQLite
+    participant LC as LLMClient
+    participant Az as Azure OpenAI
+    participant MB as MCPBridge
+    participant T as MCP Tool
+
+    U->>WS: chat message
+    WS->>E: handle_user_message
+    E->>DB: save user message
+    E->>DB: load history
+    E->>E: build system prompt from system.md + agenda
+
+    loop up to MAX_TOOL_ROUNDS
+        E->>LC: chat messages and tools
+        LC->>Az: POST chat completions
+        Az-->>LC: content and tool_calls
+        LC-->>E: message
+
+        alt has text
+            E->>WS: chat bubble
+            WS-->>U: OOB append
+            E->>DB: save assistant text
+        end
+
+        alt has tool_calls
+            E->>DB: save assistant with tool_calls
+            loop per tool_call
+                E->>MB: call_tool name args
+                MB->>T: invoke
+                T->>T: render Jinja2 template
+                T-->>MB: html and data_json
+                MB-->>E: result
+                E->>DB: save_component
+                E->>WS: component OOB swap
+                WS-->>U: preview slot update
+                E->>WS: agenda update
+                WS-->>U: agenda refresh
+                E->>DB: save tool result
+            end
+        else no tool_calls
+            Note over E: break loop
+        end
+    end

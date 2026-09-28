@@ -1,0 +1,12 @@
+<section class="component component-impact">
+    <h2>Effektbedömning</h2>
+    <div class="impact-grid">
+        {% for item in items | default([]) %}
+        <div class="impact-card">
+            <h3>{{ item.label }}</h3>
+            <div class="impact-value">{{ item.value }}</div>
+            <p>{{ item.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>

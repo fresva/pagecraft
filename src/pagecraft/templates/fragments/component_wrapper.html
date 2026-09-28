@@ -1,0 +1,11 @@
+<div id="component-{{ component_type }}" class="component-wrapper component-status-{{ status | default('draft') }}">
+    <div class="component-status-bar">
+        <span class="status-badge badge-{{ status | default('draft') }}">{{ status | default('draft') | capitalize }}</span>
+        {% if status | default('draft') == 'draft' %}
+        <button class="btn-agree" data-component-id="{{ component_id }}" data-action="agree">Godkänn</button>
+        {% elif status | default('draft') == 'agreed' %}
+        <button class="btn-revise" data-component-id="{{ component_id }}" data-action="revise">Ändra</button>
+        {% endif %}
+    </div>
+    {{ content | safe }}
+</div>

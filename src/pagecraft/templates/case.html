@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title or "Fallstudie" }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/case.css?v={{ static_v }}">
+{% endblock %}
+
+{% block body %}
+<article class="case-page">
+    <div class="case-content">
+        {% for html in components_html %}
+            {{ html | safe }}
+        {% endfor %}
+    </div>
+</article>
+{% endblock %}

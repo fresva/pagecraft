@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}PageCraft — {{ page.title or "Förhandsvisning" }}{% endblock %}
+
+{% macro slot(type) -%}
+    {% if components_html and components_html.get(type) %}
+        {{ components_html[type] | safe }}
+    {% else %}
+        <div class="component-empty">
+            <span class="component-empty-label">{{ labels.get(type, type) if labels else type }} — ännu inte ifylld</span>
+        </div>
+    {% endif %}
+{%- endmacro %}
+
+{% block body %}
+<div class="preview-standalone">
+    <header class="preview-standalone-header">
+        <span class="preview-badge">PageCraft Preview</span>
+        <div class="preview-actions">
+            <a href="/interview/{{ page.id }}" class="preview-back">&#8592; Tillbaka till intervjun</a>
+            {% if page.status == "published" %}
+            <span class="publish-state is-published">Publicerad</span>
+            <a href="/case/{{ page.id }}" target="_blank" rel="noopener" class="preview-public-link">Visa publik sida &#8599;</a>
+            {% else %}
+            <form method="post" action="/preview/{{ page.uri_token }}/publish" class="publish-form">
+                <button type="submit" class="btn-publish">Publicera</button>
+            </form>
+            {% endif %}
+        </div>
+    </header>
+    <main class="preview-standalone-content">
+        <div id="component-hero" class="component-slot">{{ slot("hero") }}</div>
+        <div id="component-metadata" class="component-slot">{{ slot("metadata") }}</div>
+        <div id="component-situation" class="component-slot">{{ slot("situation") }}</div>
+        <div id="component-kpis" class="component-slot">{{ slot("kpis") }}</div>
+        <div id="component-impact" class="component-slot">{{ slot("impact") }}</div>
+        <div id="component-implementation" class="component-slot">{{ slot("implementation") }}</div>
+        <div id="component-resources" class="component-slot">{{ slot("resources") }}</div>
+        <div id="component-getting_started" class="component-slot">{{ slot("getting_started") }}</div>
+        <div id="component-personas" class="component-slot">{{ slot("personas") }}</div>
+        <div id="component-contact" class="component-slot">{{ slot("contact") }}</div>
+    </main>
+    <footer class="preview-standalone-footer">
+        <p>Genererad med PageCraft</p>
+    </footer>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}PageCraft — Intervju{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/chat.css?v={{ static_v }}">
+{% endblock %}
+
+{% macro component_slot(type) -%}
+    {% set html = components_html.get(type) if components_html else None %}
+    {% set status = component_statuses.get(type, "") if component_statuses else "" %}
+    {% set cid = component_ids.get(type) if component_ids else None %}
+    {% if html %}
+    <div id="component-{{ type }}" class="component-wrapper component-status-{{ status }}">
+        <div class="component-status-bar">
+            <span class="status-badge badge-{{ status }}">{{ status|capitalize }}</span>
+            {% if status == "draft" %}
+            <button class="btn-agree" onclick="sendComponentAction({{ cid }}, 'agree')">Godkänn</button>
+            {% elif status == "agreed" %}
+            <button class="btn-revise" onclick="sendComponentAction({{ cid }}, 'revise')">Ändra</button>
+            {% endif %}
+            <button class="btn-edit" onclick="requestEdit({{ cid }})">Ändra fält</button>
+        </div>
+        {{ html | safe }}
+    </div>
+    {% else %}
+    <div id="component-{{ type }}" class="component-slot component-empty">
+        <span class="component-empty-label">{{ labels.get(type, type) if labels else type }} — ännu inte ifylld</span>
+    </div>
+    {% endif %}
+{%- endmacro %}
+
+{% block body %}
+<div class="split-screen">
+
+    <!-- LEFT PANEL: Chat -->
+    <div class="chat-panel">
+        <div class="chat-header">
+            <div class="chat-header-top">
+                <h2>PageCraft</h2>
+                <a href="/" class="restart-link" title="Starta en ny fallstudie">Ny fallstudie &#8635;</a>
+            </div>
+            <div id="agenda-panel" class="agenda">
+                <h3>Agenda</h3>
+                <ul class="agenda-list">
+                    {% for item in agenda_items %}
+                    {% set status = component_statuses.get(item.type, "pending") if component_statuses else "pending" %}
+                    {% if status == "agreed" %}
+                    <li class="agenda-item agenda-agreed"><span class="agenda-icon">&#9745;</span> {{ item.label }}</li>
+                    {% elif status == "draft" %}
+                    <li class="agenda-item agenda-active"><span class="agenda-icon">&#9744;</span> {{ item.label }}</li>
+                    {% else %}
+                    <li class="agenda-item agenda-pending"><span class="agenda-icon">&#9744;</span> {{ item.label }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div id="chat-messages" class="chat-messages">
+            {% for msg in chat_messages %}
+                {% with role = msg.role, text = msg.content %}
+                    {% include "fragments/chat_message.html" %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div id="typing-indicator" class="typing-indicator"></div>
+
+        <form id="chat-form" class="chat-input-form" onsubmit="return sendChatMessage(event)">
+            <input id="chat-input" name="text" type="text" placeholder="Skriv ditt svar..." autocomplete="off" />
+            <button type="submit">Skicka</button>
+        </form>
+
+        <div class="chat-end-bar">
+            <a href="/preview/{{ uri_token }}" id="preview-publish-link" class="btn-end-interview">Förhandsgranska &amp; publicera &#8594;</a>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: Preview (fixed layout) -->
+    <div class="preview-panel">
+        <div class="preview-header">
+            <span class="preview-label">Förhandsvisning</span>
+            <a href="/preview/{{ uri_token }}" target="_blank" rel="noopener" class="preview-open-link">Öppna i ny flik &#8599;</a>
+        </div>
+        <div class="preview-content">
+            {{ component_slot("hero") }}
+            {{ component_slot("metadata") }}
+            {{ component_slot("situation") }}
+            {{ component_slot("kpis") }}
+            {{ component_slot("impact") }}
+            {{ component_slot("implementation") }}
+            {{ component_slot("resources") }}
+            {{ component_slot("getting_started") }}
+            {{ component_slot("personas") }}
+            {{ component_slot("contact") }}
+        </div>
+    </div>
+
+</div>
+
+<div id="edit-modal" class="edit-modal" hidden>
+    <div class="edit-modal-backdrop" onclick="closeEditModal()"></div>
+    <div class="edit-modal-panel">
+        <div id="edit-modal-content"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/pagecraft.js?v={{ static_v }}"></script>
+<script>
+    initWebSocket({{ page_id }});
+</script>
+{% endblock %}

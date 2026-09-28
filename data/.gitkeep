@@ -1,0 +1,3 @@
+# Keeps data/ in the repo so the docker compose volume mount and the default
+# PAGECRAFT_DB_PATH (./data/pagecraft.db) have a directory to land in.
+# The database itself is gitignored.

@@ -1,0 +1,8 @@
+{#- A single chat bubble. This is the one definition of the markup: it is used
+    both for the history rendered on page load (interview.html) and for live
+    updates pushed over the WebSocket (routes/websocket.py), so the two cannot
+    drift apart. Expects `role` ("assistant" or "user") and `text`. -#}
+<div class="chat-bubble chat-{{ role }}">
+    <div class="chat-role">{{ "PageCraft" if role == "assistant" else "Du" }}</div>
+    <div class="chat-text">{{ text }}</div>
+</div>

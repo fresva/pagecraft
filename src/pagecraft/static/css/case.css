@@ -1,0 +1,30 @@
+/* Public read-only case study page. Component-level styling comes from
+   preview.css (loaded via base.html); this only frames the page. */
+.case-page {
+    background: var(--color-bg);
+    min-height: 100vh;
+    padding: 3rem 1rem;
+}
+
+.case-content {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--color-surface);
+    border-top: 5px solid var(--color-primary);
+    border-radius: var(--radius);
+    padding: 3rem;
+    box-shadow: var(--shadow);
+}
+
+.case-content > .component {
+    margin-bottom: 2.5rem;
+}
+
+.case-content > .component:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    .case-content { padding: 1.75rem; }
+    .case-page { padding: 1.5rem 0.75rem; }
+}

@@ -1,0 +1,11 @@
+<div class="component component-kpis">
+    <div class="kpis-grid">
+        {% for item in items | default([]) %}
+        <div class="kpi-cell">
+            <h3>{{ item.label }}</h3>
+            <div class="kpi-value">{{ item.value }}</div>
+            <p class="kpi-description">{{ item.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
